@@ -1,18 +1,17 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 
+import { BookController } from './components/books/bookController';
 import express from "express";
+import * as http from 'http';
 
 const app = express();
+app.use(express.json())
 
-app.get('/', (req, res) => {
-    
-    res.send('We are working!').status(200);
-    res.end();
+new BookController(app)
 
-});
+const server = http.createServer(app);
+server.listen((process.env.PORT || 3000), () => {
 
-const s = app.listen((process.env.PORT || 3000), () => {
-
-    console.log('Server has Started!', s.address()); 
+    console.log('Server has Started!', server.address()); 
 });

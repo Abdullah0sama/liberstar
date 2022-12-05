@@ -1,15 +1,20 @@
 import express  from "express"
 import { ControllerInterface } from "../../common/ControllerInterface"
+import { BookRepository } from "./bookRepository";
 
 export class BookController extends ControllerInterface {
+    bookRepository: BookRepository;
 
     constructor (app: express.Application) {
         super(app);
+        this.bookRepository = new BookRepository();
     }
 
     configureRoutes(): express.Application {
-        this.app.get('/books', (req, res) => {
-            res.send('All books').status(200).end();
+        this.app.get('/books', async (req, res) => {
+            const books = await this.bookRepository.getBooks();
+
+            res.send({ data: books }).status(200).end();
         });
 
         this.app.get('/book/:id', (req, res) => {

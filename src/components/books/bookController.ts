@@ -17,20 +17,28 @@ export class BookController extends ControllerInterface {
             res.send({ data: books }).status(200).end();
         });
 
-        this.app.get('/book/:id', (req, res) => {
-            res.send(`We Got ${req.params.id} Book here`);
+        this.app.get('/book/:id', async (req, res, next) => {
+            try {
+                const book = await this.bookRepository.getBookById(req.params.id);
+                res.send({ data: book }).status(200).end();
+            } catch (err: any) {
+                next(err)
+            }
         });
 
-        this.app.post('/books', (req, res) => {
-            console.log(req.body);
+        this.app.post('/books', async (req, res) => {
+            const id = await this.bookRepository.insertBook(req.body);
+            res.send({ data: { id }}).status(201).end();
         });
 
-        this.app.delete('/books/:id', (req, res) => {
-            console.log('Delete book');
+        this.app.delete('/books/:id', async (req, res) => {
+            await this.bookRepository.deleteBookById(req.params.id);
+            res.status(204).end();
         });
 
-        this.app.patch('/books/:id', (req, res) => {
-            console.log('Book is updated')
+        this.app.patch('/books/:id', async (req, res) => {
+            await this.bookRepository.updateBook(req.params.id, req.body);
+            res.status(204).end();
         });
 
         return this.app;

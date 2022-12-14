@@ -1,5 +1,4 @@
-import { Knex } from "knex";
-
+import knex, { Knex } from "knex";
 
 function createBookTable(builder: Knex.CreateTableBuilder) {
     builder.increments('id', { primaryKey: true });
@@ -7,7 +6,7 @@ function createBookTable(builder: Knex.CreateTableBuilder) {
     builder.date('release_date');
     builder.string('description');
     builder.string('image', 255);
-    builder.timestamps();
+    builder.timestamps(true, true);
 }
 
 export async function up(knex: Knex): Promise<void> {

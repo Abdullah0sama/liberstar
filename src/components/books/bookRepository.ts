@@ -37,9 +37,11 @@ export class BookRepository extends RepositoryInterface {
 
     async updateBook(id: string, bookDate: Partial<BaseBookInterface>) {
         try {
-            await this.knexInstance.update(bookDate).from(this.tableName).where('id', '=', id);
+            const rowsAffected = await this.knexInstance.update(bookDate).from(this.tableName).where('id', '=', id);
+            if(rowsAffected == 0) 
+                throw new NotFound('User not found!');
         } catch(err: any) {
-            console.log(err)
+            throw err;
         }
     }
 

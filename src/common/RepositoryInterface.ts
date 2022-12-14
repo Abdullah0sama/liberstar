@@ -1,9 +1,12 @@
-import {knex, Knex } from 'knex';
+import { knex, Knex } from 'knex';
+import { types } from 'pg';
 
 export abstract class RepositoryInterface {
     protected knexInstance: Knex;
     
     constructor () {
+        // Parse date to date object without changing timezone
+        types.setTypeParser(1082, (val: any) => val);
         this.knexInstance = knex({
             client: 'pg',
             connection: {

@@ -2,7 +2,7 @@ import { before, beforeEach, describe, it } from 'mocha'
 import { expect, assert } from 'chai'
 import knex from 'knex'
 import supertest from 'supertest'
-import { BaseBookInterface, BookInterface, BookInterfaceMain } from '../src/components/books/bookInterface'
+import { BaseBookInterface, BookInterface, BookInterfaceFull } from '../src/components/books/bookInterface'
 import { app } from '../src/app'
 
 const knexInstance = knex({
@@ -21,7 +21,7 @@ async function emptyTable () {
     await knexInstance.delete('*').from('books');
 }
 
-const booksDataSet:  BookInterfaceMain[] = [
+const booksDataSet:  BookInterfaceFull[] = [
     {
         id: 1,
         description: "Something there",

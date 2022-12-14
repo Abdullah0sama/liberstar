@@ -3,7 +3,8 @@ import { types } from 'pg';
 
 export abstract class RepositoryInterface {
     protected knexInstance: Knex;
-    
+    protected abstract tableName: string;
+
     constructor () {
         // Parse date to date object without changing timezone
         types.setTypeParser(1082, (val: any) => val);

@@ -5,11 +5,11 @@ export interface BaseBookInterface {
     release_date?: string,
 }
 
-export interface BookInterfaceMain extends BaseBookInterface {
+export interface BookInterfaceFull extends BaseBookInterface {
     id: number | string
 }
 
-export interface BookInterface extends BookInterfaceMain {
+export interface BookInterface extends BookInterfaceFull {
     created_at: Date,
     updated_at: Date
 }

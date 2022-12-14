@@ -3,6 +3,7 @@ dotenv.config()
 
 import { BookController } from './components/books/bookController';
 import express from "express";
+import { UserController } from './components/users/userControllers';
 
 
 export const app = express();
@@ -16,6 +17,7 @@ function errorHandler(error: any, req: express.Request, res: express.Response, n
 }
 
 new BookController(app)
+new UserController(app)
 
 app.use(errorHandler)
 

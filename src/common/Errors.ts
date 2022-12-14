@@ -12,3 +12,10 @@ export class NotAuthorized extends Error {
         super(msg)
     }
 }
+
+export class UnporcessableEntity extends Error {
+    readonly statusCode: number = 422
+    constructor (msg: string) {
+        super(msg)
+    }
+}

@@ -1,7 +1,8 @@
 import { ControllerInterface } from "../../common/ControllerInterface"
 import express  from 'express'
 import { UserRepository } from "./userRepository";
-
+import { Validation } from '../../common/validation';
+import { insertUser, paramsValidation, updateUserValidation } from "./userValidation";
 export class UserController extends ControllerInterface {
 
     userRepository: UserRepository;
@@ -21,7 +22,7 @@ export class UserController extends ControllerInterface {
             }
         })
 
-        this.app.get('/users/:id', async (req, res, next) => {
+        this.app.get('/users/:id', Validation(paramsValidation), async (req, res, next) => {
             try {
                 const user = await this.userRepository.getUserById(req.params.id);
                 res.status(200).send({ data: user });
@@ -30,7 +31,7 @@ export class UserController extends ControllerInterface {
             }
         })
 
-        this.app.post('/users/', async (req, res, next) => {
+        this.app.post('/users/', Validation(insertUser), async (req, res, next) => {
             try {
                 const id = await this.userRepository.insertUser(req.body);
                 res.status(201).send({ data: { id }});
@@ -39,7 +40,7 @@ export class UserController extends ControllerInterface {
             }
         })
 
-        this.app.patch('/users/:id', async (req, res, next) => {
+        this.app.patch('/users/:id', Validation(updateUserValidation), async (req, res, next) => {
             try {
                 await this.userRepository.updateUser(req.params.id, req.body);
                 res.status(204).end();
@@ -48,7 +49,7 @@ export class UserController extends ControllerInterface {
             }
         });
 
-        this.app.delete('/users/:id', async (req, res, next) => {
+        this.app.delete('/users/:id', Validation(paramsValidation), async (req, res, next) => {
             try {
                 await this.userRepository.deleteUser(req.params.id);
                 res.status(204).end();

@@ -1,6 +1,9 @@
 import express  from "express"
 import { ControllerInterface } from "../../common/ControllerInterface"
+import { Validation } from "../../common/validation";
+import { paramsValidation } from "../users/userValidation";
 import { BookRepository } from "./bookRepository";
+import { insertValidation, updateValidation } from "./bookValidation";
 
 export class BookController extends ControllerInterface {
     bookRepository: BookRepository;
@@ -17,7 +20,7 @@ export class BookController extends ControllerInterface {
             res.status(200).send({ data: books });
         });
 
-        this.app.get('/books/:id', async (req, res, next) => {
+        this.app.get('/books/:id', Validation(paramsValidation), async (req, res, next) => {
             try {
                 const book = await this.bookRepository.getBookById(req.params.id);
                 res.status(200).send({ data: book });
@@ -26,17 +29,17 @@ export class BookController extends ControllerInterface {
             }
         });
 
-        this.app.post('/books', async (req, res) => {
+        this.app.post('/books', Validation(insertValidation), async (req, res) => {
             const id = await this.bookRepository.insertBook(req.body);
             res.status(201).send({ data: { id }});
         });
 
-        this.app.delete('/books/:id', async (req, res) => {
+        this.app.delete('/books/:id', Validation(paramsValidation), async (req, res) => {
             await this.bookRepository.deleteBookById(req.params.id);
             res.status(204).end();
         });
 
-        this.app.patch('/books/:id', async (req, res, next) => {
+        this.app.patch('/books/:id', Validation(updateValidation), async (req, res, next) => {
             try {
                 await this.bookRepository.updateBook(req.params.id, req.body);
                 res.status(204).end();

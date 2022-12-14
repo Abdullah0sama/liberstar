@@ -7,7 +7,6 @@
     "test": "mocha -r ts-node/register test/**/*",
     "migrate:up": "knex migrate:latest --knexfile knexfile.js",
     "migrate:down": "knex migrate:down --knexfile knexfile.js",
-
     "build": "tsc"
   },
   "author": "",
@@ -32,6 +31,7 @@
     "@types/node": "^18.11.10",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "joi": "^17.7.0",
     "knex": "^2.3.0",
     "pg": "^8.8.0",
     "pino": "^8.7.0",

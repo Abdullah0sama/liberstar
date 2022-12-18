@@ -14,6 +14,9 @@ export const insertVaidation = Joi.object({
 })
 
 export const updateValidation = Joi.object({
-    body: Joi.string().min(5).required(),
-    title: Joi.string().min(5).required(),
+    params: Joi.object({
+        id: Joi.number().required(),
+    }),
+    body: Joi.string().min(5),
+    title: Joi.string().min(5),
 })

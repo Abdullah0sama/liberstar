@@ -1,6 +1,8 @@
+import { Knex } from "knex";
 import { NotFound } from "../../common/Errors";
 import { RepositoryInterface } from "../../common/RepositoryInterface"
 import { ReviewInterface, ReviewUpdateInterface } from "./reviewInterface";
+import { DatabaseError } from "pg";
 
 export class ReviewRepositroy extends RepositoryInterface {
     protected tableName: string = 'reviews'; 
@@ -30,7 +32,9 @@ export class ReviewRepositroy extends RepositoryInterface {
             const { id } = data[0];
             return id;
         } catch (err: any) {
-            console.log(err);
+            if (err.detail.includes('book_ref')) throw new NotFound(`Book with id: ${reviewData.book_ref} is not found`)
+            else if (err.detail.includes('user_ref')) throw new NotFound(`User with id: ${reviewData.user_ref} is not found`)
+            throw err;
         }
     }
 

@@ -4,6 +4,7 @@ import knex from 'knex'
 import supertest from 'supertest'
 import { BaseBookInterface, BookInterface, BookInterfaceFull } from '../src/components/books/bookInterface'
 import { app } from '../src/app'
+import { booksDataSet } from './dataset'
 
 const knexInstance = knex({
     client: 'pg',
@@ -21,22 +22,7 @@ async function emptyTable () {
     await knexInstance.delete('*').from('books');
 }
 
-const booksDataSet:  BookInterfaceFull[] = [
-    {
-        id: 1,
-        description: "Something there",
-        title: "Desert",
-        image: "https://image.com",
-        release_date: '2001-12-22',
-    },
-    {
-        id: 2,
-        description: "Something desc",
-        title: "Kafka on the shore",
-        image: "https://image.com",
-        release_date: '2000-11-11',
-    }
-] 
+
 
 
 describe('GET /books/:id', () => {

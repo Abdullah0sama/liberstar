@@ -4,6 +4,7 @@ import knex from 'knex'
 import supertest from 'supertest'
 import { app } from '../src/app'
 import { UserInterfaceFull } from '../src/components/users/userInterface';
+import { usersDataSet } from './dataset'
 const knexInstance = knex({
     client: 'pg',
     connection: {
@@ -20,36 +21,20 @@ async function emptyTable () {
     await knexInstance.delete('*').from('users');
 }
 
-const userDataSet: UserInterfaceFull[] = [
-    {
-        id: 1,
-        name: 'User 1',
-        username: 'username1',
-        bio: 'Some description',
-        dob: '2021-12-11',
-    },
-    {
-        id:2,
-        name: 'User 2',
-        username: 'username2',
-        bio: 'Some description',
-        dob: '2012-12-12',
-    }
-]
 
 describe('GET /users/:id', () => {
     beforeEach(async () => {
         await emptyTable();
-        await knexInstance.insert(userDataSet).into('users')
+        await knexInstance.insert(usersDataSet).into('users')
     })
 
     it('Should get user with id', async () => {
 
-        const res = await supertest(app)
+        const res = await supertest(app)    
             .get('/users/1')
             .expect(200)
 
-        expect(res.body.data).include(userDataSet[0])
+        expect(res.body.data).include(usersDataSet[0])
     })
 
     it('Should fail when user is not found', async () => {
@@ -64,7 +49,7 @@ describe('GET /users/:id', () => {
 describe('DELETE /users/:id', () => {
     beforeEach(async () => {
         await emptyTable();
-        await knexInstance.insert(userDataSet).into('users')
+        await knexInstance.insert(usersDataSet).into('users')
     })
 
     it('Delete existing user', async () => {
@@ -112,11 +97,11 @@ describe('POST /users/', () => {
 describe('PATCH /users/:id', () => {
     beforeEach(async () => {
         await emptyTable();
-        await knexInstance.insert(userDataSet).into('users')
+        await knexInstance.insert(usersDataSet).into('users')
     });
 
     it('Should update user', async () => {
-        const user = userDataSet[0];
+        const user = usersDataSet[0];
         const changedValues = {
             name: 'not a name'
         }

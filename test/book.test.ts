@@ -82,6 +82,7 @@ describe('POST /books/', () => {
             title: 'Hunger Games',
             description: 'Something about unfair distribution of wealth and justice',
             release_date: '2005-05-05',
+            author: 'someAuthor'
         }
 
         const res = await supertest(app)

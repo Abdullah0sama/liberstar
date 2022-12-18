@@ -3,6 +3,7 @@ export interface BaseBookInterface {
     image?: string,
     description?: string,
     release_date?: string,
+    author: string
 }
 
 export interface BookInterfaceFull extends BaseBookInterface {

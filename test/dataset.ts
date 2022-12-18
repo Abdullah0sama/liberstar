@@ -9,6 +9,7 @@ export const booksDataSet:  BookInterfaceFull[] = [
         title: "Desert",
         image: "https://image.com",
         release_date: '2001-12-22',
+        author: 'non'
     },
     {
         id: 2,
@@ -16,6 +17,7 @@ export const booksDataSet:  BookInterfaceFull[] = [
         title: "Kafka on the shore",
         image: "https://image.com",
         release_date: '2000-11-11',
+        author: 'haruki murakami'
     }
 ] 
 

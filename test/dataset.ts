@@ -18,6 +18,22 @@ export const booksDataSet:  BookInterfaceFull[] = [
         image: "https://image.com",
         release_date: '2000-11-11',
         author: 'haruki murakami'
+    },
+    {
+        id: 3,
+        description: "nothing to see here",
+        title: "Harry Potter",
+        image: "https://image.com",
+        release_date: '2000-11-11',
+        author: 'JK rowling'
+    },
+    {
+        id: 4,
+        description: "Twists",
+        title: "Game of thrones",
+        image: "https://image.com",
+        release_date: '2000-11-11',
+        author: 'G R R'
     }
 ] 
 
@@ -35,6 +51,20 @@ export const reviewsDataSet: ReviewInterfaceFull[] = [
         body: 'long sentance about how bad is this book',
         book_ref: 1,
         user_ref: 2,
+    },
+    {
+        id: 3,
+        title: 'Hated it',
+        body: 'long sentance about how good is this book',
+        book_ref: 2,
+        user_ref: 2,
+    },
+    {
+        id: 4,
+        title: 'Loving it',
+        body: 'long sentance about how bad is this book',
+        book_ref: 2,
+        user_ref: 2,
     }
 ]
 
@@ -50,6 +80,20 @@ export const usersDataSet: UserInterfaceFull[] = [
         id:2,
         name: 'User 2',
         username: 'username2',
+        bio: 'Some description',
+        dob: '2012-12-12',
+    },
+    {
+        id:3,
+        name: 'User 3',
+        username: 'username3',
+        bio: 'Some description',
+        dob: '2012-12-12',
+    },
+    {
+        id:4,
+        name: 'User 4',
+        username: 'username4',
         bio: 'Some description',
         dob: '2012-12-12',
     }

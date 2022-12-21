@@ -1,8 +1,34 @@
 import Joi from "joi";
+import { BaseBookInterface } from "./bookInterface";
+
+export const bookFields = ['id', 'title', 'image', 'description', 'release_date', 'author', 'created_at', 'updated_at']
 
 export const paramsValidation = Joi.object({
     params: Joi.object({
         id: Joi.number().required(),
+    })
+})
+
+export const listingValidation = Joi.object({
+    query: Joi.object({
+        select: Joi.array().items(
+            Joi.string().valid(...bookFields)
+        ),
+        limit: Joi.number().min(1),
+        offset: Joi.number(),
+        order_by: Joi.string().valid(...['asc', 'desc']).default('asc'),
+        sort_by: Joi.string().valid(...bookFields)
+    })
+})
+
+export const getValidation = Joi.object({
+    params: Joi.object({
+        id: Joi.number().required(),
+    }),
+    query: Joi.object({
+        select: Joi.array().items(
+            Joi.string().valid(...bookFields)
+        )
     })
 })
 

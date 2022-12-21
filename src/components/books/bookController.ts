@@ -3,7 +3,8 @@ import { ControllerInterface } from "../../common/ControllerInterface"
 import { Validation } from "../../common/validation";
 import { paramsValidation } from "../users/userValidation";
 import { BookRepository } from "./bookRepository";
-import { insertValidation, updateValidation } from "./bookValidation";
+import { getValidation, insertValidation, listingValidation, updateValidation } from "./bookValidation";
+import { GetInterface, ListInterface } from "./bookInterface";
 
 export class BookController extends ControllerInterface {
     bookRepository: BookRepository;
@@ -14,15 +15,21 @@ export class BookController extends ControllerInterface {
     }
 
     configureRoutes(): express.Application {
-        this.app.get('/books', async (req, res) => {
-            const books = await this.bookRepository.getBooks();
+        this.app.get('/books', Validation(listingValidation), async (req, res, next) => {
+            try {
+                const options: ListInterface = req.query;
+                const books = await this.bookRepository.getBooks(options);
+                res.status(200).send({ data: books });
+            } catch(err: any) {
+                next(err);
+            }
 
-            res.status(200).send({ data: books });
         });
 
-        this.app.get('/books/:id', Validation(paramsValidation), async (req, res, next) => {
+        this.app.get('/books/:id', Validation(getValidation), async (req, res, next) => {
             try {
-                const book = await this.bookRepository.getBookById(req.params.id);
+                const options: GetInterface = req.query;
+                const book = await this.bookRepository.getBookById(req.params.id, options);
                 res.status(200).send({ data: book });
             } catch (err: any) {
                 next(err)

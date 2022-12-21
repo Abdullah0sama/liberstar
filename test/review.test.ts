@@ -25,6 +25,25 @@ async function emptyTable () {
 }
 
 
+describe('GET /reviews/', () => {
+    after(emptyTable)
+    beforeEach(async () => {
+        await emptyTable();
+        await knexInstance.insert(booksDataSet).into('books');
+        await knexInstance.insert(usersDataSet).into('users');
+        await knexInstance.insert(reviewsDataSet).into('reviews')
+    })
+    it('Should get reviews with specified options', async () => {
+
+        const res = await supertest(app)
+            .get('/reviews?select=id&select=title&limit=2&sort_by=title&order_by=desc')
+            .expect(200)
+        let data = [...reviewsDataSet].sort((left, right) => (right.title < left.title)? -1 : 1 ).slice(0, 2)
+        .map((review) => ({title: review.title, id: review.id}))
+        expect(res.body.data).to.eql(data)
+    })
+})
+
 describe('GET /reviews/:id', () => {
     after(emptyTable)
     beforeEach(async () => {
@@ -33,6 +52,14 @@ describe('GET /reviews/:id', () => {
         await knexInstance.insert(usersDataSet).into('users');
         await knexInstance.insert(reviewsDataSet).into('reviews')
     })
+
+    it('Should get review with specified fields', async () => {
+        const res = await supertest(app)
+        .get('/reviews/1?select=title&select=body')
+        .expect(200)
+
+        expect(res.body.data).include((({body, title}) => ({title, body}))(reviewsDataSet[0]))
+    });
 
     it('Should get review with id', async () => {
 

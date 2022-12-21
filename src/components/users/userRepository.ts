@@ -1,6 +1,7 @@
 import { NotFound } from "../../common/Errors";
 import { RepositoryInterface } from "../../common/RepositoryInterface";
-import { BaseUserInterface } from "./userInterface";
+import { BaseUserInterface, GetInterface, ListInterface } from "./userInterface";
+import { userFields } from "./userValidation";
 
 
 export class UserRepository extends RepositoryInterface {
@@ -9,13 +10,19 @@ export class UserRepository extends RepositoryInterface {
         super();
     }
 
-    getUsers() {
-        return this.knexInstance.select('*').from(this.tableName);
+    getUsers(options: ListInterface) {
+        const query =  this.knexInstance.select(options.select || userFields).from(this.tableName)
+        
+        if (options.sort_by) query.orderBy(options.sort_by, options.order_by);
+        if (options.limit) query.limit(options.limit)
+        if (options.offset) query.offset(options.offset)
+
+        return query;
     }
     
-    async getUserById (id: string) {
+    async getUserById (id: string, options: GetInterface) {
         try {
-            const user = await this.knexInstance.select('*').from(this.tableName).where('id', '=', id);
+            const user = await this.knexInstance.select(options.select || userFields).from(this.tableName).where('id', '=', id);
             if (!user.length) {
                 throw new NotFound(`User with id: ${id} is not found!`);
             }

@@ -21,6 +21,22 @@ async function emptyTable () {
     await knexInstance.delete('*').from('users');
 }
 
+describe('GET /users/', () => {
+    beforeEach(async () => {
+        await emptyTable();
+        await knexInstance.insert(usersDataSet).into('users')
+    })
+
+    it('Should get users with specified options', async () => {
+
+        const res = await supertest(app)
+            .get('/users?select=id&select=username&limit=2&sort_by=username&order_by=desc')
+            .expect(200)
+        let data = [...usersDataSet].sort((left, right) => (right.username < left.username)? -1 : 1 ).slice(0, 2)
+        .map((user) => ({username: user.username, id: user.id}))
+        expect(res.body.data).to.eql(data)
+    })
+});
 
 describe('GET /users/:id', () => {
     beforeEach(async () => {
@@ -36,6 +52,14 @@ describe('GET /users/:id', () => {
 
         expect(res.body.data).include(usersDataSet[0])
     })
+
+    it('Should get user with specified fields', async () => {
+        const res = await supertest(app)    
+        .get('/users/1?select=username&select=id')
+        .expect(200)
+
+    expect(res.body.data).include((({username, id}) => ({username, id}))(usersDataSet[0]))
+    });
 
     it('Should fail when user is not found', async () => {
         const id = 1000;

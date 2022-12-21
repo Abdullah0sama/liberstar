@@ -7,6 +7,7 @@ export function Validation(schema: Joi.Schema) {
         try {
             const data = { ...req.body, }
             if (Object.keys(req.params).length !== 0) Object.assign(data, { params: req.params })  
+            if (Object.keys(req.query).length != 0) Object.assign(data, { query: req.query })
             await schema.validateAsync(data)
             next()
         } catch (err: any) {

@@ -1,5 +1,8 @@
 import Joi from "joi";
 
+
+export const userFields = ['id', 'name', 'dob', 'bio', 'image', 'username'];
+
 export const paramsValidation = Joi.object({
     params: Joi.object({
         id: Joi.number().required(),
@@ -24,3 +27,27 @@ export const updateUserValidation = Joi.object({
     dob: Joi.date(),
     image: Joi.string().uri()
 }).or('name', 'username', 'bio', 'dob', 'image')
+
+
+export const listingValidation = Joi.object({
+    query: Joi.object({
+        select: Joi.array().items(
+            Joi.string().valid(...userFields)
+        ),
+        limit: Joi.number().min(1),
+        offset: Joi.number(),
+        order_by: Joi.string().valid(...['asc', 'desc']).default('asc'),
+        sort_by: Joi.string().valid(...userFields)
+    })
+})
+
+export const getValidation = Joi.object({
+    params: Joi.object({
+        id: Joi.number().required(),
+    }),
+    query: Joi.object({
+        select: Joi.array().items(
+            Joi.string().valid(...userFields)
+        )
+    })
+})

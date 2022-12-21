@@ -2,7 +2,8 @@ import { Application } from "express";
 import { ControllerInterface } from "../../common/ControllerInterface";
 import { ReviewRepositroy } from "./reviewRepository";
 import { Validation } from "../../common/validation";
-import { insertVaidation, paramsValidation, updateValidation } from "./reviewValidation";
+import { getValidation, insertVaidation, listingValidation, paramsValidation, updateValidation } from "./reviewValidation";
+import { GetInterface, ListInterface } from "./reviewInterface";
 
 
 export class ReviewController extends ControllerInterface {
@@ -14,9 +15,10 @@ export class ReviewController extends ControllerInterface {
 
     configureRoutes(): Application {
         
-        this.app.get('/reviews/', async (req, res, next) => {
+        this.app.get('/reviews/', Validation(listingValidation), async (req, res, next) => {
             try {
-                const reviews = await this.reviewRepository.getReviews();
+                const options: ListInterface = req.query
+                const reviews = await this.reviewRepository.getReviews(options);
                 res.status(200).send({ data: reviews });
             } catch(err: any) {
                 next(err);
@@ -24,9 +26,10 @@ export class ReviewController extends ControllerInterface {
         });
 
 
-        this.app.get('/reviews/:id', Validation(paramsValidation), async (req, res, next) => {
+        this.app.get('/reviews/:id', Validation(getValidation), async (req, res, next) => {
             try {
-                const review = await this.reviewRepository.getReviewById(req.params.id);
+                const options: GetInterface = req.query;
+                const review = await this.reviewRepository.getReviewById(req.params.id, options);
                 res.status(200).send({ data: review });
             } catch(err: any) {
                 next(err);

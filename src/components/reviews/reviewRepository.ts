@@ -1,8 +1,8 @@
 import { Knex } from "knex";
 import { NotFound } from "../../common/Errors";
 import { RepositoryInterface } from "../../common/RepositoryInterface"
-import { ReviewInterface, ReviewUpdateInterface } from "./reviewInterface";
-import { DatabaseError } from "pg";
+import { GetInterface, ListInterface, ReviewInterface, ReviewUpdateInterface } from "./reviewInterface";
+import { reviewFields } from "./reviewValidation";
 
 export class ReviewRepositroy extends RepositoryInterface {
     protected tableName: string = 'reviews'; 
@@ -10,13 +10,19 @@ export class ReviewRepositroy extends RepositoryInterface {
         super();
     }
 
-    async getReviews() {
-        return this.knexInstance.select('*').from(this.tableName)
+    async getReviews(options: ListInterface) {
+        const query =  this.knexInstance.select(options.select || reviewFields).from(this.tableName)
+        
+        if (options.sort_by) query.orderBy(options.sort_by, options.order_by);
+        if (options.limit) query.limit(options.limit)
+        if (options.offset) query.offset(options.offset)
+
+        return query;
     }
 
-    async getReviewById(id: string) {
+    async getReviewById(id: string, options: GetInterface) {
         try {
-            const review = await this.knexInstance.select('*').from(this.tableName).where('id', '=', id);
+            const review = await this.knexInstance.select(options.select || reviewFields).from(this.tableName).where('id', '=', id);
             if (!review.length) {
                 throw new NotFound(`Review with id: ${id} is not found!`);
             }

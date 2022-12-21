@@ -5,6 +5,7 @@ import supertest from 'supertest'
 import { BaseBookInterface, BookInterface, BookInterfaceFull } from '../src/components/books/bookInterface'
 import { app } from '../src/app'
 import { booksDataSet } from './dataset'
+import exp from 'constants'
 
 const knexInstance = knex({
     client: 'pg',
@@ -25,6 +26,24 @@ async function emptyTable () {
 
 
 
+describe('GET /books/', () => {
+    beforeEach(async () => {
+        await emptyTable();
+        await knexInstance.insert(booksDataSet).into('books')
+    })
+
+    it('Should get books with specified options', async () => {
+
+        const res = await supertest(app)
+            .get('/books?select=id&select=title&limit=2&sort_by=id&order_by=desc')
+            .expect(200)
+        
+        let data = [...booksDataSet].sort((left, right) => (right.id < left.id)? -1 : 1 ).slice(0, 2)
+        .map((book) => ({title: book.title, id: book.id}))
+        expect(res.body.data).to.eql(data)
+    })
+});
+
 describe('GET /books/:id', () => {
     beforeEach(async () => {
         await emptyTable();
@@ -38,6 +57,15 @@ describe('GET /books/:id', () => {
             .expect(200)
 
         expect(res.body.data).include(booksDataSet[0])
+    })
+
+    it('Should get book with select fields', async () => {
+
+        const res = await supertest(app)
+            .get('/books/1?select=title&select=id')
+            .expect(200)
+        expect(res.body.data).to.have.all.keys('title', 'id')
+        expect(res.body.data).include( (( {title, id}) => ({title, id } ))(booksDataSet[0]) )
     })
 
     it('Should fail when book is not found', async () => {

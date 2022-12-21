@@ -2,7 +2,8 @@ import { ControllerInterface } from "../../common/ControllerInterface"
 import express  from 'express'
 import { UserRepository } from "./userRepository";
 import { Validation } from '../../common/validation';
-import { insertUser, paramsValidation, updateUserValidation } from "./userValidation";
+import { getValidation, insertUser, listingValidation, paramsValidation, updateUserValidation } from "./userValidation";
+import { GetInterface, ListInterface } from "./userInterface";
 export class UserController extends ControllerInterface {
 
     userRepository: UserRepository;
@@ -14,17 +15,20 @@ export class UserController extends ControllerInterface {
     
     configureRoutes(): express.Application {
         
-        this.app.get('/users', async (req, res, next) => {
+        this.app.get('/users', Validation(listingValidation), async (req, res, next) => {
             try {
-                const users = await this.userRepository.getUsers();
+                const options: ListInterface = req.query;
+                const users = await this.userRepository.getUsers(options);
+                res.status(200).send({ data: users });
             } catch (err: any) {
                 next(err);
             }
         })
 
-        this.app.get('/users/:id', Validation(paramsValidation), async (req, res, next) => {
+        this.app.get('/users/:id', Validation(getValidation), async (req, res, next) => {
             try {
-                const user = await this.userRepository.getUserById(req.params.id);
+                const options: GetInterface = req.query;
+                const user = await this.userRepository.getUserById(req.params.id, options);
                 res.status(200).send({ data: user });
             } catch (err: any) {
                 next(err);

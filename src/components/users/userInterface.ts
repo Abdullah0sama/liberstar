@@ -14,3 +14,14 @@ export interface UserInterface extends BaseUserInterface {
     created_at: Date,
     updated_at: Date
 }
+export interface ListInterface {
+    select?: string | string[],
+    order_by?: 'asc'| 'desc',
+    sort_by?: string,
+    limit?: number,
+    offset?: number
+}
+
+export interface GetInterface {
+    select?: string | string[]
+}

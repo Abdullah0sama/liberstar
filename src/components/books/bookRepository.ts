@@ -1,6 +1,7 @@
 import { NotFound } from "../../common/Errors";
 import { RepositoryInterface } from "../../common/RepositoryInterface";
-import { BaseBookInterface, BookInterface } from "./bookInterface";
+import { BaseBookInterface, BookInterface, GetInterface, ListInterface } from "./bookInterface";
+import { bookFields } from "./bookValidation";
 
 export class BookRepository extends RepositoryInterface {
     tableName: string = "books"
@@ -8,13 +9,19 @@ export class BookRepository extends RepositoryInterface {
         super();
     }
 
-    async getBooks () {
-        return this.knexInstance.select('*').from(this.tableName);
+    async getBooks (options: ListInterface) {
+        const query =  this.knexInstance.select(options.select || bookFields).from(this.tableName)
+        
+        if (options.sort_by) query.orderBy(options.sort_by, options.order_by);
+        if (options.limit) query.limit(options.limit)
+        if (options.offset) query.offset(options.offset)
+
+        return query;
     }
 
-    async getBookById(id: string) {
+    async getBookById(id: string, options: GetInterface) {
         try {
-            const book = await this.knexInstance.select('*').from(this.tableName).where('id', '=', id);
+            const book = await this.knexInstance.select(options.select || bookFields).from(this.tableName).where('id', '=', id);
             if (!book.length) {
                 throw new NotFound(`User with id: ${id} is not found!`);
             }

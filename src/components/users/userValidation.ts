@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 
-export const userFields = ['id', 'name', 'dob', 'bio', 'image', 'username', 'email'];
+export const userFields = ['id', 'name', 'dob', 'bio', 'image', 'username', 'email', 'role'];
 
 export const paramsValidation = Joi.object({
     params: Joi.object({

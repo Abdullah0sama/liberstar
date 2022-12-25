@@ -15,7 +15,7 @@ export class AuthService {
         try {
             const { password: sentPassword, ...identifiers } = cred;
             const { password, ...userData } = await this.userRepository.getUserWithPassword(identifiers, {
-                select: ['username', 'id', 'email', 'password']
+                select: ['username', 'id', 'email', 'password', 'role']
             })
             
             const isPasswordCorrect = await PasswordHash.compareHash(sentPassword, password);

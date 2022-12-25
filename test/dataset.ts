@@ -1,3 +1,4 @@
+import { userRoles } from "../src/components/auth/auth.interface"
 import { BookInterfaceFull } from "../src/components/books/bookInterface"
 import { ReviewInterfaceFull } from "../src/components/reviews/reviewInterface"
 import { UserInterfaceFull } from "../src/components/users/userInterface"
@@ -76,7 +77,8 @@ export const usersDataSet: UserInterfaceFull[] = [
         bio: 'Some description',
         dob: '2021-12-11',
         email: 'email@gmail.com',
-        password: '12345678910'
+        password: '12345678910',
+        role: userRoles.user
     },
     {
         id:2,
@@ -85,7 +87,8 @@ export const usersDataSet: UserInterfaceFull[] = [
         bio: 'Some description',
         dob: '2012-12-12',
         email: 'test@test.com',
-        password: '12345678910'
+        password: '12345678910',
+        role: userRoles.user
     },
     {
         id:3,
@@ -94,7 +97,8 @@ export const usersDataSet: UserInterfaceFull[] = [
         bio: 'Some description',
         dob: '2012-12-12',
         email: 'user@test.com',
-        password: '12345678910'
+        password: '12345678910',
+        role: userRoles.user
     },
     {
         id:4,
@@ -103,6 +107,17 @@ export const usersDataSet: UserInterfaceFull[] = [
         bio: 'Some description',
         dob: '2012-12-12',
         email: 'user@user.com',
-        password: '12345678910'
+        password: '12345678910',
+        role: userRoles.user
+    },
+    {
+        id:5,
+        name: 'User 4',
+        username: 'admin123',
+        bio: 'Some description',
+        dob: '2012-12-12',
+        email: 'admin123@user.com',
+        password: '12345678910',
+        role: userRoles.admin
     }
 ]

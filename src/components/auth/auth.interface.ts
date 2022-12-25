@@ -4,3 +4,9 @@ export interface CredentialsInterface  {
     id: string,
     password: string
 }
+
+export enum userRoles {
+    'user' = 'user',
+    'admin' = 'admin',
+    'root' = 'root'
+} 

@@ -1,3 +1,5 @@
+import { userRoles } from "../auth/auth.interface"
+
 export interface BaseUserInterface {
     name: string,
     dob: string | Date,
@@ -5,12 +7,13 @@ export interface BaseUserInterface {
     bio?: string,
     image?: string,
     email: string,
-    password: string
+    password: string,
 }
 
 
 export interface UserInterfaceFull extends BaseUserInterface {
-    id: string | number
+    id: string | number,
+    role: userRoles
 }
 
 export interface UserInterface extends BaseUserInterface {

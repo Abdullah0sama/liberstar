@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 
-export const userFields = ['id', 'name', 'dob', 'bio', 'image', 'username'];
+export const userFields = ['id', 'name', 'dob', 'bio', 'image', 'username', 'email'];
 
 export const paramsValidation = Joi.object({
     params: Joi.object({
@@ -14,7 +14,9 @@ export const insertUser = Joi.object({
     username: Joi.string().regex(/^[a-zA-Z0-9-]+$/).min(5).max(40),
     bio: Joi.string().max(240),
     dob: Joi.date(),
-    image: Joi.string().uri()
+    image: Joi.string().uri(),
+    email: Joi.string().email().required(),
+    password: Joi.string().min(10).required()
 })
 
 export const updateUserValidation = Joi.object({
@@ -25,8 +27,10 @@ export const updateUserValidation = Joi.object({
     username: Joi.string().regex(/^[a-zA-Z0-9-]+$/).min(5).max(40),
     bio: Joi.string().max(240),
     dob: Joi.date(),
-    image: Joi.string().uri()
-}).or('name', 'username', 'bio', 'dob', 'image')
+    image: Joi.string().uri(),
+    email: Joi.string().email(),
+    password: Joi.string().min(10)
+}).or('name', 'username', 'bio', 'dob', 'image', 'email', 'password')
 
 
 export const listingValidation = Joi.object({

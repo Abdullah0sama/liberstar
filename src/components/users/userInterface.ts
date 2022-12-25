@@ -4,7 +4,10 @@ export interface BaseUserInterface {
     username: string,
     bio?: string,
     image?: string,
+    email: string,
+    password: string
 }
+
 
 export interface UserInterfaceFull extends BaseUserInterface {
     id: string | number
@@ -14,6 +17,7 @@ export interface UserInterface extends BaseUserInterface {
     created_at: Date,
     updated_at: Date
 }
+
 export interface ListInterface {
     select?: string | string[],
     order_by?: 'asc'| 'desc',

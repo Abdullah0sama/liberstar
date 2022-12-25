@@ -49,8 +49,8 @@ describe('GET /users/:id', () => {
         const res = await supertest(app)    
             .get('/users/1')
             .expect(200)
-
-        expect(res.body.data).include(usersDataSet[0])
+        const { password, ...rest } = usersDataSet[0]
+        expect(res.body.data).include(rest)
     })
 
     it('Should get user with specified fields', async () => {
@@ -104,18 +104,67 @@ describe('POST /users/', () => {
             username: 'someuser',
             bio: 'nothing here',
             dob: '2005-05-05',
+            email: 'something@something.com',
+            password: '12345678910'
         }
 
         const res = await supertest(app)
             .post('/users')
             .send(user)
             .expect(201)
-
         const { data: { id } } = res.body;
-        console.log()
+        const { password, ...rest } = user;
         const [inserteduser] = await knexInstance.from('users').where('id', '=', id);
-        expect(inserteduser).include(user);
+        expect(inserteduser).include(rest);
     });
+
+    it('Should fail when adding two users with same username', async () => {
+        const {id, ...firstUser} = usersDataSet[0]
+
+        const user = {
+            name: 'somethingsomehting',
+            username: firstUser.username,
+            bio: 'nothing here',
+            dob: '2005-05-05',
+            email: 'something@something.com',
+            password: '12345678910'
+        }
+
+        await supertest(app)
+            .post('/users')
+            .send(firstUser)
+
+        const res = await supertest(app)
+            .post('/users')
+            .send(user)
+            .expect(422)
+        expect(res.body.error).equal('`username` is already used!');
+    })
+
+
+    it('Should fail when adding two users with same email', async () => {
+        const {id, ...firstUser} = usersDataSet[0]
+
+        const user = {
+            name: 'somethingsomehting',
+            username: 'someuser',
+            bio: 'nothing here',
+            dob: '2005-05-05',
+            email: firstUser.email,
+            password: '12345678910'
+        }
+
+        await supertest(app)
+            .post('/users')
+            .send(firstUser)
+
+        const res = await supertest(app)
+            .post('/users')
+            .send(user)
+            .expect(422)
+
+        expect(res.body.error).equal('`email` is already used!');
+    })
 });
 
 describe('PATCH /users/:id', () => {

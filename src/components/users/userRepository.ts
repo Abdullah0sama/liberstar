@@ -1,4 +1,4 @@
-import { NotFound } from "../../common/Errors";
+import { NotFound, UnporcessableEntity } from "../../common/Errors";
 import { RepositoryInterface } from "../../common/RepositoryInterface";
 import { BaseUserInterface, GetInterface, ListInterface } from "./userInterface";
 import { userFields } from "./userValidation";
@@ -38,7 +38,11 @@ export class UserRepository extends RepositoryInterface {
             const { id } = ret[0];
             return id;
         } catch (err: any) {
+            
             console.log(err)
+            if (err.constraint == 'users_username_unique') throw new UnporcessableEntity('`username` is already used!');
+            else if (err.constraint == 'users_email_unique') throw new UnporcessableEntity('`email` is already used!');
+            
         }
     }
 
@@ -56,6 +60,8 @@ export class UserRepository extends RepositoryInterface {
         try {
             await this.knexInstance.delete().from(this.tableName).where('id', '=', id);
         } catch (err: any) {
+            if (err.constraint == 'users_username_unique') throw new UnporcessableEntity('`username` is already used!');
+            else if (err.contraint == 'users_email_unique') throw new UnporcessableEntity('`email` is already used!');
             console.log(err)
         }
     }

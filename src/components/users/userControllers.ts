@@ -4,6 +4,7 @@ import { UserRepository } from "./userRepository";
 import { Validation } from '../../common/validation';
 import { getValidation, insertUser, listingValidation, paramsValidation, updateUserValidation } from "./userValidation";
 import { GetInterface, ListInterface } from "./userInterface";
+import { PasswordHash } from "../../common/services/auth/utils";
 export class UserController extends ControllerInterface {
 
     userRepository: UserRepository;
@@ -37,6 +38,7 @@ export class UserController extends ControllerInterface {
 
         this.app.post('/users/', Validation(insertUser), async (req, res, next) => {
             try {
+                req.body.password = await PasswordHash.hash(req.body.password)
                 const id = await this.userRepository.insertUser(req.body);
                 res.status(201).send({ data: { id }});
             } catch (err: any) {
@@ -46,6 +48,7 @@ export class UserController extends ControllerInterface {
 
         this.app.patch('/users/:id', Validation(updateUserValidation), async (req, res, next) => {
             try {
+                if(req.body.password) req.body.password = await PasswordHash.hash(req.body.password)
                 await this.userRepository.updateUser(req.params.id, req.body);
                 res.status(204).end();
             } catch (err: any) {

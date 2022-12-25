@@ -75,6 +75,8 @@ export const usersDataSet: UserInterfaceFull[] = [
         username: 'username1',
         bio: 'Some description',
         dob: '2021-12-11',
+        email: 'email@gmail.com',
+        password: '12345678910'
     },
     {
         id:2,
@@ -82,6 +84,8 @@ export const usersDataSet: UserInterfaceFull[] = [
         username: 'username2',
         bio: 'Some description',
         dob: '2012-12-12',
+        email: 'test@test.com',
+        password: '12345678910'
     },
     {
         id:3,
@@ -89,6 +93,8 @@ export const usersDataSet: UserInterfaceFull[] = [
         username: 'username3',
         bio: 'Some description',
         dob: '2012-12-12',
+        email: 'user@test.com',
+        password: '12345678910'
     },
     {
         id:4,
@@ -96,5 +102,7 @@ export const usersDataSet: UserInterfaceFull[] = [
         username: 'username4',
         bio: 'Some description',
         dob: '2012-12-12',
+        email: 'user@user.com',
+        password: '12345678910'
     }
 ]

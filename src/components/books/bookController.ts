@@ -5,6 +5,7 @@ import { paramsValidation } from "../users/userValidation";
 import { BookRepository } from "./bookRepository";
 import { getValidation, insertValidation, listingValidation, updateValidation } from "./bookValidation";
 import { GetInterface, ListInterface } from "./bookInterface";
+import { authenticationMiddleWare } from "../../common/services/auth/authMiddleware";
 
 export class BookController extends ControllerInterface {
     bookRepository: BookRepository;
@@ -15,44 +16,56 @@ export class BookController extends ControllerInterface {
     }
 
     configureRoutes(): express.Application {
-        this.app.get('/books', Validation(listingValidation), async (req, res, next) => {
-            try {
-                const options: ListInterface = req.query;
-                const books = await this.bookRepository.getBooks(options);
-                res.status(200).send({ data: books });
-            } catch(err: any) {
-                next(err);
-            }
-
+        this.app.get('/books', 
+            Validation(listingValidation), 
+            async (req, res, next) => {
+                try {
+                    const options: ListInterface = req.query;
+                    const books = await this.bookRepository.getBooks(options);
+                    res.status(200).send({ data: books });
+                } catch(err: any) {
+                    next(err);
+                }
         });
 
-        this.app.get('/books/:id', Validation(getValidation), async (req, res, next) => {
-            try {
-                const options: GetInterface = req.query;
-                const book = await this.bookRepository.getBookById(req.params.id, options);
-                res.status(200).send({ data: book });
-            } catch (err: any) {
-                next(err)
-            }
+        this.app.get('/books/:id', 
+            Validation(getValidation), 
+            async (req, res, next) => {
+                try {
+                    const options: GetInterface = req.query;
+                    const book = await this.bookRepository.getBookById(req.params.id, options);
+                    res.status(200).send({ data: book });
+                } catch (err: any) {
+                    next(err)
+                }
         });
 
-        this.app.post('/books', Validation(insertValidation), async (req, res) => {
-            const id = await this.bookRepository.insertBook(req.body);
-            res.status(201).send({ data: { id }});
+        this.app.post('/books', 
+            authenticationMiddleWare,
+            Validation(insertValidation), 
+            async (req, res) => {
+                const id = await this.bookRepository.insertBook(req.body);
+                res.status(201).send({ data: { id }});
         });
 
-        this.app.delete('/books/:id', Validation(paramsValidation), async (req, res) => {
-            await this.bookRepository.deleteBookById(req.params.id);
-            res.status(204).end();
-        });
-
-        this.app.patch('/books/:id', Validation(updateValidation), async (req, res, next) => {
-            try {
-                await this.bookRepository.updateBook(req.params.id, req.body);
+        this.app.delete('/books/:id', 
+            authenticationMiddleWare,
+            Validation(paramsValidation), 
+            async (req, res) => {
+                await this.bookRepository.deleteBookById(req.params.id);
                 res.status(204).end();
-            } catch (err: any) {
-                next(err);
-            }
+        });
+
+        this.app.patch('/books/:id', 
+            authenticationMiddleWare,
+            Validation(updateValidation), 
+            async (req, res, next) => {
+                try {
+                    await this.bookRepository.updateBook(req.params.id, req.body);
+                    res.status(204).end();
+                } catch (err: any) {
+                    next(err);
+                }
         });
 
         return this.app;

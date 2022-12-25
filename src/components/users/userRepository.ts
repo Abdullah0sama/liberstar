@@ -1,6 +1,6 @@
 import { NotFound, UnporcessableEntity } from "../../common/Errors";
 import { RepositoryInterface } from "../../common/RepositoryInterface";
-import { BaseUserInterface, GetInterface, ListInterface } from "./userInterface";
+import { BaseUserInterface, GetInterface, ListInterface, userIdentifiers } from "./userInterface";
 import { userFields } from "./userValidation";
 
 
@@ -19,7 +19,18 @@ export class UserRepository extends RepositoryInterface {
 
         return query;
     }
-    
+    async getUserWithPassword(condition: { [k in userIdentifiers]?: string }, options: GetInterface) {
+        try {
+            const select = options.select || userFields
+            const user = await this.knexInstance.select([...select, 'password']).from(this.tableName).where(condition);
+            if (!user.length) {
+                throw new NotFound(`User with ${JSON.stringify(condition)} is not found!`);
+            }
+            return user[0];
+        } catch (err: any) {
+            throw err;
+        }
+    }
     async getUserById (id: string, options: GetInterface) {
         try {
             const user = await this.knexInstance.select(options.select || userFields).from(this.tableName).where('id', '=', id);

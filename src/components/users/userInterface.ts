@@ -29,3 +29,9 @@ export interface ListInterface {
 export interface GetInterface {
     select?: string | string[]
 }
+
+export enum userIdentifiers {
+    username = 'useranme',
+    id = 'id',
+    email = 'email'
+}

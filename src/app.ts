@@ -5,6 +5,7 @@ import { BookController } from './components/books/bookController';
 import express from "express";
 import { UserController } from './components/users/userControllers';
 import { ReviewController } from './components/reviews/reviewController';
+import { AuthController } from './components/auth/auth.controller';
 
 
 export const app = express();
@@ -20,6 +21,7 @@ function errorHandler(error: any, req: express.Request, res: express.Response, n
 new BookController(app)
 new UserController(app)
 new ReviewController(app)
+new AuthController(app)
 app.use(errorHandler)
 
 module.exports.app =  app;

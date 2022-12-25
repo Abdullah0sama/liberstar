@@ -22,12 +22,14 @@ export class AuthService {
             if(!isPasswordCorrect) {
                 throw new NotAuthorized('Wrong identifier or password');
             }
+            console.log(userData, password)
             const token = await generateToken(userData, {
                 expiresIn: '5m'
             })
             return token
             } catch(err: any) {
                 if (err instanceof NotFound) throw new NotAuthorized('Wrong identifier or password');
+                throw err;
             }
     }
 }

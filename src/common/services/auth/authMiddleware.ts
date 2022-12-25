@@ -3,7 +3,7 @@ import express from 'express'
 import { Forbidden, NotAuthorized } from '../../Errors'
 import { verifiyToken } from './auth'
 
-export async function authenticationMiddleWare(req: express.Request, res: express.Response, next: express.NextFunction) {
+export async function validateAccessToken(req: express.Request, res: express.Response, next: express.NextFunction) {
     if(req.headers['authorization']) {
         try {
             const [ bearer, token ] = req.headers['authorization'].split(' ')

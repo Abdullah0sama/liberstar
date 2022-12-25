@@ -5,7 +5,7 @@ import { Validation } from '../../common/validation';
 import { getValidation, insertUser, listingValidation, paramsValidation, updateUserValidation } from "./userValidation";
 import { GetInterface, ListInterface } from "./userInterface";
 import { PasswordHash } from "../../common/services/auth/utils";
-import { authenticationMiddleWare } from "../../common/services/auth/authMiddleware";
+import { validateAccessToken } from "../../common/services/auth/authMiddleware";
 export class UserController extends ControllerInterface {
 
     userRepository: UserRepository;
@@ -54,7 +54,7 @@ export class UserController extends ControllerInterface {
         })
 
         this.app.patch('/users/:id', 
-            authenticationMiddleWare,
+            validateAccessToken,
             Validation(updateUserValidation), 
             async (req, res, next) => {
                 try {
@@ -67,7 +67,7 @@ export class UserController extends ControllerInterface {
         });
 
         this.app.delete('/users/:id', 
-            authenticationMiddleWare,
+            validateAccessToken,
             Validation(paramsValidation), 
             async (req, res, next) => {
                 try {

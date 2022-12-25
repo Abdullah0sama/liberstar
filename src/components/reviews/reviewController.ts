@@ -4,7 +4,7 @@ import { ReviewRepositroy } from "./reviewRepository";
 import { Validation } from "../../common/validation";
 import { getValidation, insertVaidation, listingValidation, paramsValidation, updateValidation } from "./reviewValidation";
 import { GetInterface, ListInterface } from "./reviewInterface";
-import { authenticationMiddleWare } from "../../common/services/auth/authMiddleware";
+import { validateAccessToken } from "../../common/services/auth/authMiddleware";
 
 
 export class ReviewController extends ControllerInterface {
@@ -42,7 +42,7 @@ export class ReviewController extends ControllerInterface {
         });
 
         this.app.post('/reviews/', 
-            authenticationMiddleWare,
+            validateAccessToken,
             Validation(insertVaidation), 
             async (req, res, next) => {
                 try {
@@ -54,7 +54,7 @@ export class ReviewController extends ControllerInterface {
         });
 
         this.app.delete('/reviews/:id', 
-            authenticationMiddleWare,
+            validateAccessToken,
             Validation(paramsValidation), 
             async (req, res, next) => {
                 try {
@@ -66,7 +66,7 @@ export class ReviewController extends ControllerInterface {
         });
 
         this.app.patch('/reviews/:id', 
-            authenticationMiddleWare,
+            validateAccessToken,
             Validation(updateValidation), 
             async (req, res, next) => {
                 try {

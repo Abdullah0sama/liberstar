@@ -5,7 +5,7 @@ import { paramsValidation } from "../users/userValidation";
 import { BookRepository } from "./bookRepository";
 import { getValidation, insertValidation, listingValidation, updateValidation } from "./bookValidation";
 import { GetInterface, ListInterface } from "./bookInterface";
-import { authenticationMiddleWare } from "../../common/services/auth/authMiddleware";
+import { validateAccessToken } from "../../common/services/auth/authMiddleware";
 
 export class BookController extends ControllerInterface {
     bookRepository: BookRepository;
@@ -41,7 +41,7 @@ export class BookController extends ControllerInterface {
         });
 
         this.app.post('/books', 
-            authenticationMiddleWare,
+            validateAccessToken,
             Validation(insertValidation), 
             async (req, res) => {
                 const id = await this.bookRepository.insertBook(req.body);
@@ -49,7 +49,7 @@ export class BookController extends ControllerInterface {
         });
 
         this.app.delete('/books/:id', 
-            authenticationMiddleWare,
+            validateAccessToken,
             Validation(paramsValidation), 
             async (req, res) => {
                 await this.bookRepository.deleteBookById(req.params.id);
@@ -57,7 +57,7 @@ export class BookController extends ControllerInterface {
         });
 
         this.app.patch('/books/:id', 
-            authenticationMiddleWare,
+            validateAccessToken,
             Validation(updateValidation), 
             async (req, res, next) => {
                 try {

@@ -1,10 +1,10 @@
-import { Application } from "express";
-import { ControllerInterface } from "../../common/ControllerInterface";
-import { ReviewRepositroy } from "./reviewRepository";
-import { Validation } from "../../common/validation";
-import { getValidation, insertVaidation, listingValidation, paramsValidation, updateValidation } from "./reviewValidation";
-import { GetInterface, ListInterface } from "./reviewInterface";
-import { protectReview, validateAccessToken } from "../../common/services/auth/authMiddleware";
+import { Application } from 'express';
+import { ControllerInterface } from '../../common/ControllerInterface';
+import { ReviewRepositroy } from './reviewRepository';
+import { Validation } from '../../common/validation';
+import { getValidation, insertVaidation, listingValidation, paramsValidation, updateValidation } from './reviewValidation';
+import { GetInterface, ListInterface } from './reviewInterface';
+import { protectReview, validateAccessToken } from '../../common/services/auth/authMiddleware';
 
 
 export class ReviewController extends ControllerInterface {

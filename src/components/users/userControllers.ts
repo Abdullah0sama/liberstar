@@ -1,11 +1,11 @@
-import { ControllerInterface } from "../../common/ControllerInterface"
+import { ControllerInterface } from '../../common/ControllerInterface'
 import express  from 'express'
-import { UserRepository } from "./userRepository";
+import { UserRepository } from './userRepository';
 import { Validation } from '../../common/validation';
-import { getValidation, insertUser, listingValidation, paramsValidation, updateUserValidation } from "./userValidation";
-import { GetInterface, ListInterface } from "./userInterface";
-import { PasswordHash } from "../../common/services/auth/utils";
-import { protectUser, validateAccessToken } from "../../common/services/auth/authMiddleware";
+import { getValidation, insertUser, listingValidation, paramsValidation, updateUserValidation } from './userValidation';
+import { GetInterface, ListInterface } from './userInterface';
+import { PasswordHash } from '../../common/services/auth/utils';
+import { protectUser, validateAccessToken } from '../../common/services/auth/authMiddleware';
 export class UserController extends ControllerInterface {
 
     userRepository: UserRepository;

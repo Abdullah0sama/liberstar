@@ -2,7 +2,8 @@
     "root": true,
     "parser": "@typescript-eslint/parser",
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "unused-imports"
     ],
     "extends": [
         "eslint:recommended",
@@ -10,6 +11,9 @@
         "plugin:@typescript-eslint/recommended"
     ],
     "rules": {
-        "quotes": ["error", "single"]
+        "quotes": ["error", "single"],
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "unused-imports/no-unused-imports": "error"
     }
 }

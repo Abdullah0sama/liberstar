@@ -1,4 +1,4 @@
-import { userRoles } from "../auth/auth.interface"
+import { userRoles } from '../auth/auth.interface'
 
 export interface BaseUserInterface {
     name: string,

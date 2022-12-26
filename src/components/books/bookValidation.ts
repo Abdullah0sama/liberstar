@@ -1,5 +1,4 @@
-import Joi from "joi";
-import { BaseBookInterface } from "./bookInterface";
+import Joi from 'joi';
 
 export const bookFields = ['id', 'title', 'image', 'description', 'release_date', 'author', 'created_at', 'updated_at']
 

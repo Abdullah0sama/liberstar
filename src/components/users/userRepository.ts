@@ -1,11 +1,11 @@
-import { NotFound, UnporcessableEntity } from "../../common/Errors";
-import { RepositoryInterface } from "../../common/RepositoryInterface";
-import { BaseUserInterface, GetInterface, ListInterface, userIdentifiers } from "./userInterface";
-import { userFields } from "./userValidation";
+import { NotFound, UnporcessableEntity } from '../../common/Errors';
+import { RepositoryInterface } from '../../common/RepositoryInterface';
+import { BaseUserInterface, GetInterface, ListInterface, userIdentifiers } from './userInterface';
+import { userFields } from './userValidation';
 
 
 export class UserRepository extends RepositoryInterface {
-    tableName = "users";
+    tableName = 'users';
     constructor () {
         super();
     }

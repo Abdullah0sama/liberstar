@@ -1,4 +1,4 @@
-import Joi from "joi";
+import Joi from 'joi';
 
 export const reviewFields = ['id', 'title', 'body', 'book_ref', 'user_ref']
 

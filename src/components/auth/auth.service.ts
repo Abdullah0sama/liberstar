@@ -1,8 +1,8 @@
-import { NotAuthorized, NotFound } from "../../common/Errors";
-import { generateToken } from "../../common/services/auth/auth";
-import { PasswordHash } from "../../common/services/auth/utils";
-import { UserRepository } from "../users/userRepository";
-import { CredentialsInterface } from "./auth.interface";
+import { NotAuthorized, NotFound } from '../../common/Errors';
+import { generateToken } from '../../common/services/auth/auth';
+import { PasswordHash } from '../../common/services/auth/utils';
+import { UserRepository } from '../users/userRepository';
+import { CredentialsInterface } from './auth.interface';
 
 
 export class AuthService {

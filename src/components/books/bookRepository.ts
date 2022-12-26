@@ -1,10 +1,10 @@
-import { NotFound } from "../../common/Errors";
-import { RepositoryInterface } from "../../common/RepositoryInterface";
-import { BaseBookInterface, BookInterface, GetInterface, ListInterface } from "./bookInterface";
-import { bookFields } from "./bookValidation";
+import { NotFound } from '../../common/Errors';
+import { RepositoryInterface } from '../../common/RepositoryInterface';
+import { BaseBookInterface, GetInterface, ListInterface } from './bookInterface';
+import { bookFields } from './bookValidation';
 
 export class BookRepository extends RepositoryInterface {
-    tableName: string = "books"
+    tableName = 'books'
     constructor() {
         super();
     }

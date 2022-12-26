@@ -9,8 +9,8 @@
     "migrate:down": "knex migrate:down --knexfile knexfile.js",
     "build": "tsc",
     "start": "tsc && node dist/server.js",
-    "lint": "eslint src/**/*.ts",
-    "format": "eslint src/**/*.ts --fix"
+    "lint": "eslint --ext ts src/",
+    "format": "eslint --ext ts src/ --fix"
   },
   "author": "",
   "license": "ISC",
@@ -27,6 +27,7 @@
     "eslint": "^8.30.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-unused-imports": "^2.0.0",
     "mocha": "^10.1.0",
     "supertest": "^6.3.3",
     "tap": "^16.3.2",

@@ -1,5 +1,5 @@
-import Joi from "joi";
-import { userRoles } from "../auth/auth.interface";
+import Joi from 'joi';
+import { userRoles } from '../auth/auth.interface';
 
 
 export const userFields = ['id', 'name', 'dob', 'bio', 'image', 'username', 'email', 'role'];

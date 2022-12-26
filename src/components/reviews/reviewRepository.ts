@@ -1,11 +1,10 @@
-import { Knex } from "knex";
-import { NotFound } from "../../common/Errors";
-import { RepositoryInterface } from "../../common/RepositoryInterface"
-import { GetInterface, ListInterface, ReviewInterface, ReviewUpdateInterface } from "./reviewInterface";
-import { reviewFields } from "./reviewValidation";
+import { NotFound } from '../../common/Errors';
+import { RepositoryInterface } from '../../common/RepositoryInterface'
+import { GetInterface, ListInterface, ReviewInterface, ReviewUpdateInterface } from './reviewInterface';
+import { reviewFields } from './reviewValidation';
 
 export class ReviewRepositroy extends RepositoryInterface {
-    protected tableName: string = 'reviews'; 
+    protected tableName = 'reviews'; 
     constructor () {
         super();
     }

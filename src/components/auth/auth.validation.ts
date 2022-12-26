@@ -1,4 +1,4 @@
-import Joi from "joi";
+import Joi from 'joi';
 
 export const authValidation = Joi.object({
     password: Joi.string().required(),

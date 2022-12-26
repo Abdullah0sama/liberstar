@@ -1,11 +1,11 @@
-import express  from "express"
-import { ControllerInterface } from "../../common/ControllerInterface"
-import { Validation } from "../../common/validation";
-import { paramsValidation } from "../users/userValidation";
-import { BookRepository } from "./bookRepository";
-import { getValidation, insertValidation, listingValidation, updateValidation } from "./bookValidation";
-import { GetInterface, ListInterface } from "./bookInterface";
-import { validateAccessToken } from "../../common/services/auth/authMiddleware";
+import express  from 'express'
+import { ControllerInterface } from '../../common/ControllerInterface'
+import { Validation } from '../../common/validation';
+import { paramsValidation } from '../users/userValidation';
+import { BookRepository } from './bookRepository';
+import { getValidation, insertValidation, listingValidation, updateValidation } from './bookValidation';
+import { GetInterface, ListInterface } from './bookInterface';
+import { validateAccessToken } from '../../common/services/auth/authMiddleware';
 
 export class BookController extends ControllerInterface {
     bookRepository: BookRepository;

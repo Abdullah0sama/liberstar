@@ -2,7 +2,6 @@
 import express from 'express'
 import { Forbidden, NotAuthorized } from '../../Errors'
 import { verifiyToken } from './auth'
-import { BookRepository } from '../../../components/books/bookRepository'
 import { ReviewRepositroy } from '../../../components/reviews/reviewRepository'
 import { userRoles } from '../../../components/auth/auth.interface'
 

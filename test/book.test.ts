@@ -1,11 +1,10 @@
-import { before, beforeEach, describe, it } from 'mocha'
-import { expect, assert } from 'chai'
+import { beforeEach, describe, it } from 'mocha'
+import { expect } from 'chai'
 import knex from 'knex'
 import supertest from 'supertest'
-import { BaseBookInterface, BookInterface, BookInterfaceFull } from '../src/components/books/bookInterface'
 import { app } from '../src/app'
-import { booksDataSet } from './dataset'
-import exp from 'constants'
+import { booksDataSet, rootUser } from './dataset'
+import { getRootAccessToken } from './utils'
 
 const knexInstance = knex({
     client: 'pg',
@@ -21,6 +20,7 @@ const knexInstance = knex({
 
 async function emptyTable () {
     await knexInstance.delete('*').from('books');
+    await knexInstance.delete('*').from('users');
 }
 
 
@@ -78,15 +78,19 @@ describe('GET /books/:id', () => {
 });
 
 describe('DELETE /books/:id', () => {
+    let token: string;
     beforeEach(async () => {
         await emptyTable();
         await knexInstance.insert(booksDataSet).into('books')
+        token = await getRootAccessToken();
+
     })
 
     it('Delete existing book', async () => {
         const id = 1;
         const res = await supertest(app)
             .delete(`/books/${id}`)
+            .set('Authorization', `Bearer ${token}`)
             .expect(204)
         const book = await knexInstance.select('*').from('books').where('id', '=', id);
         expect(book.length).to.equal(0)
@@ -94,15 +98,19 @@ describe('DELETE /books/:id', () => {
 
     it('Delete non-existing book', async () => {
         const id = 1000;
+        let token = await getRootAccessToken();
         await supertest(app)    
             .delete(`/books/${id}`)
+            .set('Authorization', `Bearer ${token}`)
             .expect(204)
     })
 })
 
 describe('POST /books/', () => {
+    let token: string;
     beforeEach(async () => {
         await emptyTable();
+        token = await getRootAccessToken();
     });
 
     it('Should add new book', async () => {
@@ -115,20 +123,23 @@ describe('POST /books/', () => {
 
         const res = await supertest(app)
             .post('/books')
+            .set('Authorization', `Bearer ${token}`)
             .send(book)
             .expect(201)
 
         const { data: { id } } = res.body;
-        console.log()
         const [insertedBook] = await knexInstance.from('books').where('id', '=', id);
         expect(insertedBook).include(book);
     });
 });
 
 describe('PATCH /books/:id', () => {
+    let token: string;
+
     beforeEach(async () => {
         await emptyTable();
         await knexInstance.insert(booksDataSet).into('books')
+        token = await getRootAccessToken();
     });
 
     it('Should update book', async () => {
@@ -139,6 +150,7 @@ describe('PATCH /books/:id', () => {
 
         const res = await supertest(app)
             .patch(`/books/${book.id}`)
+            .set('Authorization', `Bearer ${token}`)
             .send(changedValues)
             .expect(204)
         
@@ -150,6 +162,7 @@ describe('PATCH /books/:id', () => {
 
         const res = await supertest(app)
             .patch('/books/10000')
+            .set('Authorization', `Bearer ${token}`)
             .send({title: 'fake title'})
             .expect(404)
     });

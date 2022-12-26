@@ -3,8 +3,8 @@ import { expect, assert } from 'chai'
 import knex from 'knex'
 import supertest from 'supertest'
 import { app } from '../src/app'
-import { UserInterfaceFull } from '../src/components/users/userInterface';
 import { usersDataSet } from './dataset'
+import { getRootAccessToken } from './utils'
 const knexInstance = knex({
     client: 'pg',
     connection: {
@@ -71,15 +71,18 @@ describe('GET /users/:id', () => {
 });
 
 describe('DELETE /users/:id', () => {
+    let token: string;
     beforeEach(async () => {
         await emptyTable();
         await knexInstance.insert(usersDataSet).into('users')
+        token = await getRootAccessToken();
     })
 
     it('Delete existing user', async () => {
         const id = 1;
         const res = await supertest(app)
             .delete(`/users/${id}`)
+            .set('Authorization', `Bearer ${token}`)
             .expect(204)
         const user = await knexInstance.select('*').from('users').where('id', '=', id);
         expect(user.length).to.equal(0)
@@ -89,13 +92,17 @@ describe('DELETE /users/:id', () => {
         const id = 1000;
         await supertest(app)    
             .delete(`/users/${id}`)
+            .set('Authorization', `Bearer ${token}`)
             .expect(204)
     })
 })
 
 describe('POST /users/', () => {
+    let token: string;
     beforeEach(async () => {
         await emptyTable();
+        token = await getRootAccessToken();
+
     });
 
     it('Should add new user', async () => {
@@ -105,11 +112,12 @@ describe('POST /users/', () => {
             bio: 'nothing here',
             dob: '2005-05-05',
             email: 'something@something.com',
-            password: '12345678910'
+            password: '12345678910',
         }
 
         const res = await supertest(app)
             .post('/users')
+            .set('Authorization', `Bearer ${token}`)
             .send(user)
             .expect(201)
         const { data: { id } } = res.body;
@@ -132,10 +140,12 @@ describe('POST /users/', () => {
 
         await supertest(app)
             .post('/users')
+            .set('Authorization', `Bearer ${token}`)
             .send(firstUser)
 
         const res = await supertest(app)
             .post('/users')
+            .set('Authorization', `Bearer ${token}`)
             .send(user)
             .expect(422)
         expect(res.body.error).equal('`username` is already used!');
@@ -156,11 +166,13 @@ describe('POST /users/', () => {
 
         await supertest(app)
             .post('/users')
+            .set('Authorization', `Bearer ${token}`)
             .send(firstUser)
 
         const res = await supertest(app)
             .post('/users')
             .send(user)
+            .set('Authorization', `Bearer ${token}`)
             .expect(422)
 
         expect(res.body.error).equal('`email` is already used!');
@@ -168,9 +180,11 @@ describe('POST /users/', () => {
 });
 
 describe('PATCH /users/:id', () => {
+    let token: string;
     beforeEach(async () => {
         await emptyTable();
         await knexInstance.insert(usersDataSet).into('users')
+        token = await getRootAccessToken();
     });
 
     it('Should update user', async () => {
@@ -182,6 +196,7 @@ describe('PATCH /users/:id', () => {
         const res = await supertest(app)
             .patch(`/users/${user.id}`)
             .send(changedValues)
+            .set('Authorization', `Bearer ${token}`)
             .expect(204)
         
         const [ founduser ] = await knexInstance.from('users').where('id', '=', user.id);
@@ -193,6 +208,7 @@ describe('PATCH /users/:id', () => {
         const res = await supertest(app)
             .patch('/users/10000')
             .send({name: 'fakeName'})
+            .set('Authorization', `Bearer ${token}`)
             .expect(404)
     });
 });

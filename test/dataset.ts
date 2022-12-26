@@ -121,3 +121,15 @@ export const usersDataSet: UserInterfaceFull[] = [
         role: userRoles.admin
     }
 ]
+
+export const rootUser = {
+                            id:1,
+                            name: 'User 4',
+                            username: 'admin123',
+                            bio: 'Some description',
+                            dob: '2012-12-12',
+                            email: 'admin123@user.com',
+                            password: '12345678910',
+                            role: userRoles.admin
+                        }
+

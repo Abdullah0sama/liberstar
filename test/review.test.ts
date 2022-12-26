@@ -4,7 +4,7 @@ import knex from 'knex'
 import supertest from 'supertest'
 import { app } from '../src/app'
 import { booksDataSet, reviewsDataSet, usersDataSet } from './dataset'
-import exp from 'constants'
+import { getRootAccessToken } from './utils'
 
 const knexInstance = knex({
     client: 'pg',
@@ -80,18 +80,22 @@ describe('GET /reviews/:id', () => {
 });
 
 describe('DELETE /reviews/:id', () => {
+    let token: string;
     after(emptyTable);
     beforeEach(async () => {
         await emptyTable();
         await knexInstance.insert(booksDataSet).into('books');
         await knexInstance.insert(usersDataSet).into('users');
         await knexInstance.insert(reviewsDataSet).into('reviews')
+        token = await getRootAccessToken();
+
     })
 
     it('Delete existing review', async () => {
         const id = 1;
         const res = await supertest(app)
             .delete(`/reviews/${id}`)
+            .set('Authorization', `Bearer ${token}`)
             .expect(204)
         const review = await knexInstance.select('*').from('reviews').where('id', '=', id);
         expect(review.length).to.equal(0)
@@ -101,16 +105,19 @@ describe('DELETE /reviews/:id', () => {
         const id = 1000;
         await supertest(app)    
             .delete(`/reviews/${id}`)
+            .set('Authorization', `Bearer ${token}`)
             .expect(204)
     })
 })
 
 describe('POST /reviews/', () => {
+    let token: string;
     after(emptyTable);
     beforeEach(async () => {
         await emptyTable();
         await knexInstance.insert(booksDataSet).into('books');
         await knexInstance.insert(usersDataSet).into('users');
+        token = await getRootAccessToken();
     });
 
     it('Should add new book', async () => {
@@ -123,6 +130,7 @@ describe('POST /reviews/', () => {
 
         const res = await supertest(app)
             .post('/reviews')
+            .set('Authorization', `Bearer ${token}`)
             .send(review)
             .expect(201)
 
@@ -141,6 +149,7 @@ describe('POST /reviews/', () => {
 
         const res = await supertest(app)
             .post('/reviews')
+            .set('Authorization', `Bearer ${token}`)
             .send(review)
             .expect(404)
         expect(res.body.error).be.equal(`Book with id: ${review.book_ref} is not found`)
@@ -149,12 +158,14 @@ describe('POST /reviews/', () => {
 });
 
 describe('PATCH /reviews/:id', () => {
+    let token: string;
     after(emptyTable);
     beforeEach(async () => {
         await emptyTable();
         await knexInstance.insert(booksDataSet).into('books');
         await knexInstance.insert(usersDataSet).into('users');
         await knexInstance.insert(reviewsDataSet).into('reviews')
+        token = await getRootAccessToken();
     });
 
     it('Should update review', async () => {
@@ -165,6 +176,7 @@ describe('PATCH /reviews/:id', () => {
 
         const res = await supertest(app)
             .patch(`/reviews/${review.id}`)
+            .set('Authorization', `Bearer ${token}`)
             .send(changedValues)
             .expect(204)
         
@@ -176,6 +188,7 @@ describe('PATCH /reviews/:id', () => {
 
         const res = await supertest(app)
             .patch('/reviews/10000')
+            .set('Authorization', `Bearer ${token}`)
             .send({title: 'fake title'})
             .expect(404)
     });
@@ -184,6 +197,7 @@ describe('PATCH /reviews/:id', () => {
         const review = reviewsDataSet[0];
         const res = await supertest(app)
             .patch(`/reviews/${review.id}`)
+            .set('Authorization', `Bearer ${token}`)
             .send({ book_ref: 2 })
             .expect(422);
         

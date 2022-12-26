@@ -1,4 +1,5 @@
 import Joi from "joi";
+import { userRoles } from "../auth/auth.interface";
 
 
 export const userFields = ['id', 'name', 'dob', 'bio', 'image', 'username', 'email', 'role'];
@@ -16,7 +17,8 @@ export const insertUser = Joi.object({
     dob: Joi.date().required(),
     image: Joi.string().uri(),
     email: Joi.string().email().required(),
-    password: Joi.string().min(10).required()
+    password: Joi.string().min(10).required(),
+    role: Joi.string().allow(...Object.values(userRoles))
 })
 
 export const updateUserValidation = Joi.object({

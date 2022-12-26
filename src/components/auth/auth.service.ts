@@ -22,7 +22,6 @@ export class AuthService {
             if(!isPasswordCorrect) {
                 throw new NotAuthorized('Wrong identifier or password');
             }
-            console.log(userData, password)
             const token = await generateToken(userData, {
                 expiresIn: '5m'
             })

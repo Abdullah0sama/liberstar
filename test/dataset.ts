@@ -118,18 +118,71 @@ export const usersDataSet: UserInterfaceFull[] = [
         dob: '2012-12-12',
         email: 'admin123@user.com',
         password: '12345678910',
+        role: userRoles.user
+    }
+]
+
+export const adminDataSet = [
+    {
+        id: 1,
+        name: 'User 1',
+        username: 'username1',
+        bio: 'Some description',
+        dob: '2021-12-11',
+        email: 'email@gmail.com',
+        password: '12345678910',
         role: userRoles.admin
+    },
+    {
+        id:2,
+        name: 'User 2',
+        username: 'username2',
+        bio: 'Some description',
+        dob: '2012-12-12',
+        email: 'test@test.com',
+        password: '12345678910',
+        role: userRoles.user
+    },
+    {
+        id:3,
+        name: 'User 3',
+        username: 'username3',
+        bio: 'Some description',
+        dob: '2012-12-12',
+        email: 'user@test.com',
+        password: '12345678910',
+        role: userRoles.user
+    },
+    {
+        id:4,
+        name: 'User 4',
+        username: 'username4',
+        bio: 'Some description',
+        dob: '2012-12-12',
+        email: 'user@user.com',
+        password: '12345678910',
+        role: userRoles.user
+    },
+    {
+        id:5,
+        name: 'User 4',
+        username: 'admin123',
+        bio: 'Some description',
+        dob: '2012-12-12',
+        email: 'admin123@user.com',
+        password: '12345678910',
+        role: userRoles.user
     }
 ]
 
 export const rootUser = {
                             id:1,
                             name: 'User 4',
-                            username: 'admin123',
+                            username: 'root123',
                             bio: 'Some description',
                             dob: '2012-12-12',
-                            email: 'admin123@user.com',
+                            email: 'root123@user.com',
                             password: '12345678910',
-                            role: userRoles.admin
+                            role: userRoles.root
                         }
 

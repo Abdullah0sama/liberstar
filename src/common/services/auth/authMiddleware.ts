@@ -35,7 +35,7 @@ export function protectUser (req: express.Request, res: express.Response, next: 
 
 export async function protectReview (req: express.Request, res: express.Response, next: express.NextFunction) {
     if ([userRoles.admin, userRoles.root].includes(req.auth.role)) return next();
-    const reviewRepository = new ReviewRepositroy();
+    const reviewRepository = new ReviewRepositroy(req.app.locals.logger);
     const review = await reviewRepository.getReviewById(req.params.id, {
         select: ['user_ref']
     })

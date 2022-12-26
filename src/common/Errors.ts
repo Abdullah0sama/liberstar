@@ -1,5 +1,8 @@
+export abstract class HttpError extends Error {
+    abstract statusCode: number
+}
 
-export class NotFound extends Error {
+export class NotFound extends HttpError {
     readonly statusCode: number = 404
     constructor (msg='') {
         super(msg)

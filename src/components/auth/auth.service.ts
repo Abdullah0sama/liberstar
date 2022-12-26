@@ -1,3 +1,4 @@
+import pino from 'pino';
 import { NotAuthorized, NotFound } from '../../common/Errors';
 import { generateToken } from '../../common/services/auth/auth';
 import { PasswordHash } from '../../common/services/auth/utils';
@@ -7,9 +8,10 @@ import { CredentialsInterface } from './auth.interface';
 
 export class AuthService {
     userRepository: UserRepository;
-
-    constructor() {
-        this.userRepository = new UserRepository()
+    logger: pino.Logger
+    constructor(logger: pino.Logger) {
+        this.logger = logger
+        this.userRepository = new UserRepository(logger)
     }
     async passwordAuthentication (cred: CredentialsInterface) {
         try {
@@ -26,7 +28,7 @@ export class AuthService {
                 expiresIn: '5m'
             })
             return token
-            } catch(err: any) {
+            } catch(err: unknown) {
                 if (err instanceof NotFound) throw new NotAuthorized('Wrong identifier or password');
                 throw err;
             }

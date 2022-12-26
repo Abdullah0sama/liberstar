@@ -1,12 +1,14 @@
+import pino from 'pino';
 import { NotFound } from '../../common/Errors';
 import { RepositoryInterface } from '../../common/RepositoryInterface'
 import { GetInterface, ListInterface, ReviewInterface, ReviewUpdateInterface } from './reviewInterface';
 import { reviewFields } from './reviewValidation';
+import { DatabaseError } from 'pg';
 
 export class ReviewRepositroy extends RepositoryInterface {
     protected tableName = 'reviews'; 
-    constructor () {
-        super();
+    constructor (logger: pino.Logger) {
+        super(logger);
     }
 
     async getReviews(options: ListInterface) {
@@ -26,7 +28,8 @@ export class ReviewRepositroy extends RepositoryInterface {
                 throw new NotFound(`Review with id: ${id} is not found!`);
             }
             return review[0];
-        } catch(err: any) {
+        } catch(err: unknown) {
+            this.logger.error(err, `Failed to get review by id: ${id}`)
             throw err;
         }
     }
@@ -36,9 +39,13 @@ export class ReviewRepositroy extends RepositoryInterface {
             const data = await this.knexInstance.insert(reviewData).into(this.tableName).returning('id');
             const { id } = data[0];
             return id;
-        } catch (err: any) {
-            if (err.detail.includes('book_ref')) throw new NotFound(`Book with id: ${reviewData.book_ref} is not found`)
-            else if (err.detail.includes('user_ref')) throw new NotFound(`User with id: ${reviewData.user_ref} is not found`)
+        } catch (err: unknown) {
+            this.logger.error(err, 'Failed to insert review by id')
+
+            if (!(err instanceof DatabaseError)) throw err;
+            
+            if (err.detail && err.detail.includes('book_ref')) throw new NotFound(`Book with id: ${reviewData.book_ref} is not found`)
+            else if (err.detail && err.detail.includes('user_ref')) throw new NotFound(`User with id: ${reviewData.user_ref} is not found`)
             throw err;
         }
     }
@@ -48,7 +55,8 @@ export class ReviewRepositroy extends RepositoryInterface {
             const rowsAffected = await this.knexInstance.update(reviewDate).from(this.tableName).where('id', '=', id);
             if(rowsAffected == 0) 
                 throw new NotFound('Review not found!');
-        } catch(err: any) {
+        } catch(err: unknown) {
+            this.logger.error(err, `Failed to update review by id: ${id}`)
             throw err;
         }
     }
@@ -56,8 +64,9 @@ export class ReviewRepositroy extends RepositoryInterface {
     async deleteReview(id: string) {
         try {
             await this.knexInstance.delete().from(this.tableName).where('id', '=', id);
-        } catch(err: any) {
-            console.log(err);
+        } catch(err: unknown) {
+            this.logger.error(err, `Failed to delete review by id: ${id}`)
+            throw err;
         }
     }
 }

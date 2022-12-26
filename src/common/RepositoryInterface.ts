@@ -1,11 +1,13 @@
 import { knex, Knex } from 'knex';
 import { types } from 'pg';
+import pino from 'pino';
 
 export abstract class RepositoryInterface {
     protected knexInstance: Knex;
     protected abstract tableName: string;
-
-    constructor () {
+    logger: pino.Logger
+    constructor (logger: pino.Logger) {
+        this.logger = logger;
         // Parse date to date object without changing timezone
         types.setTypeParser(1082, (val: unknown) => val);
         this.knexInstance = knex({

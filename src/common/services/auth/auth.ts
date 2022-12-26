@@ -1,9 +1,6 @@
 import jwt from 'jsonwebtoken'
 
 
-export interface jwtPayloadInterface {
-
-}
 export function generateToken(payload: any, options: jwt.SignOptions = {}) {
     const token = jwt.sign(payload, process.env.TOKEN_SECRET!, options)
     return token;

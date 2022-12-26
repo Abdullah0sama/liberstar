@@ -6,13 +6,14 @@ import { BookRepository } from './bookRepository';
 import { getValidation, insertValidation, listingValidation, updateValidation } from './bookValidation';
 import { GetInterface, ListInterface } from './bookInterface';
 import { validateAccessToken } from '../../common/services/auth/authMiddleware';
+import pino from 'pino';
 
 export class BookController extends ControllerInterface {
     bookRepository: BookRepository;
 
-    constructor (app: express.Application) {
-        super(app);
-        this.bookRepository = new BookRepository();
+    constructor (app: express.Application, logger: pino.Logger) {
+        super(app, logger);        
+        this.bookRepository = new BookRepository(logger);
     }
 
     configureRoutes(): express.Application {
@@ -23,7 +24,8 @@ export class BookController extends ControllerInterface {
                     const options: ListInterface = req.query;
                     const books = await this.bookRepository.getBooks(options);
                     res.status(200).send({ data: books });
-                } catch(err: any) {
+                } catch(err: unknown) {
+                    this.logger.error(err, 'BookController GET /books')
                     next(err);
                 }
         });
@@ -35,7 +37,8 @@ export class BookController extends ControllerInterface {
                     const options: GetInterface = req.query;
                     const book = await this.bookRepository.getBookById(req.params.id, options);
                     res.status(200).send({ data: book });
-                } catch (err: any) {
+                } catch (err: unknown) {
+                    this.logger.error(err, 'BookController GET /books/:id')
                     next(err)
                 }
         });
@@ -63,7 +66,8 @@ export class BookController extends ControllerInterface {
                 try {
                     await this.bookRepository.updateBook(req.params.id, req.body);
                     res.status(204).end();
-                } catch (err: any) {
+                } catch (err: unknown) {
+                    this.logger.error(err, 'BookController PATCH /books/:id')
                     next(err);
                 }
         });

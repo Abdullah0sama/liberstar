@@ -1,13 +1,15 @@
+import { DatabaseError } from 'pg-protocol';
 import { NotFound, UnporcessableEntity } from '../../common/Errors';
 import { RepositoryInterface } from '../../common/RepositoryInterface';
 import { BaseUserInterface, GetInterface, ListInterface, userIdentifiers } from './userInterface';
 import { userFields } from './userValidation';
+import pino from 'pino';
 
 
 export class UserRepository extends RepositoryInterface {
     tableName = 'users';
-    constructor () {
-        super();
+    constructor (logger: pino.Logger) {
+        super(logger);
     }
 
     getUsers(options: ListInterface) {
@@ -27,7 +29,8 @@ export class UserRepository extends RepositoryInterface {
                 throw new NotFound(`User with ${JSON.stringify(condition)} is not found!`);
             }
             return user[0];
-        } catch (err: any) {
+        } catch (err: unknown) {
+            this.logger.error(err, 'Failed to get get user with password')
             throw err;
         }
     }
@@ -38,7 +41,8 @@ export class UserRepository extends RepositoryInterface {
                 throw new NotFound(`User with id: ${id} is not found!`);
             }
             return user[0];
-        } catch (err: any) {
+        } catch (err: unknown) {
+            this.logger.error(err, `Failed to get user by id: ${id}`)
             throw err;
         }
     }
@@ -48,9 +52,9 @@ export class UserRepository extends RepositoryInterface {
             const ret = await this.knexInstance.insert(userDate).into(this.tableName).returning('id');
             const { id } = ret[0];
             return id;
-        } catch (err: any) {
-            
-            console.log(err)
+        } catch (err: unknown) {
+            this.logger.error(err, 'Failed to insert user')
+            if (!(err instanceof DatabaseError)) throw err
             if (err.constraint == 'users_username_unique') throw new UnporcessableEntity('`username` is already used!');
             else if (err.constraint == 'users_email_unique') throw new UnporcessableEntity('`email` is already used!');
             
@@ -62,7 +66,8 @@ export class UserRepository extends RepositoryInterface {
             const rowsAffected = await this.knexInstance.update(userDate).from(this.tableName).where('id', '=', id);
             if(rowsAffected == 0) 
                 throw new NotFound('User not found!');
-        } catch(err: any) {
+        } catch(err: unknown) {
+            this.logger.error(err, `Failed to update user by id: ${id}`)
             throw err;
         }
     }
@@ -70,10 +75,11 @@ export class UserRepository extends RepositoryInterface {
     async deleteUser(id: string) {
         try {
             await this.knexInstance.delete().from(this.tableName).where('id', '=', id);
-        } catch (err: any) {
+        } catch (err: unknown) {
+            this.logger.error(err, `Failed to delete user by id: ${id}`)
+            if (!(err instanceof DatabaseError)) throw err
             if (err.constraint == 'users_username_unique') throw new UnporcessableEntity('`username` is already used!');
-            else if (err.contraint == 'users_email_unique') throw new UnporcessableEntity('`email` is already used!');
-            console.log(err)
+            else if (err.constraint == 'users_email_unique') throw new UnporcessableEntity('`email` is already used!');
         }
     }
 }

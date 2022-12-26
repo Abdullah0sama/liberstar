@@ -6,13 +6,14 @@ import { getValidation, insertUser, listingValidation, paramsValidation, updateU
 import { GetInterface, ListInterface } from './userInterface';
 import { PasswordHash } from '../../common/services/auth/utils';
 import { protectUser, validateAccessToken } from '../../common/services/auth/authMiddleware';
+import pino from 'pino';
 export class UserController extends ControllerInterface {
 
     userRepository: UserRepository;
 
-    constructor(app: express.Application) {
-        super(app);
-        this.userRepository = new UserRepository();
+    constructor(app: express.Application, logger: pino.Logger) {
+        super(app, logger);
+        this.userRepository = new UserRepository(logger);
     }
     
     configureRoutes(): express.Application {
@@ -24,7 +25,7 @@ export class UserController extends ControllerInterface {
                     const options: ListInterface = req.query;
                     const users = await this.userRepository.getUsers(options);
                     res.status(200).send({ data: users });
-                } catch (err: any) {
+                } catch (err: unknown) {
                     next(err);
                 }
         })
@@ -36,7 +37,7 @@ export class UserController extends ControllerInterface {
                     const options: GetInterface = req.query;
                     const user = await this.userRepository.getUserById(req.params.id, options);
                     res.status(200).send({ data: user });
-                } catch (err: any) {
+                } catch (err: unknown) {
                     next(err);
                 }
         })
@@ -48,7 +49,7 @@ export class UserController extends ControllerInterface {
                     req.body.password = await PasswordHash.hash(req.body.password)
                     const id = await this.userRepository.insertUser(req.body);
                     res.status(201).send({ data: { id }});
-                } catch (err: any) {
+                } catch (err: unknown) {
                     next(err);
                 }
         })
@@ -62,7 +63,7 @@ export class UserController extends ControllerInterface {
                     if(req.body.password) req.body.password = await PasswordHash.hash(req.body.password)
                     await this.userRepository.updateUser(req.params.id, req.body);
                     res.status(204).end();
-                } catch (err: any) {
+                } catch (err: unknown) {
                     next(err);
                 }
         });
@@ -75,7 +76,7 @@ export class UserController extends ControllerInterface {
                 try {
                     await this.userRepository.deleteUser(req.params.id);
                     res.status(204).end();
-                } catch (err: any) {
+                } catch (err: unknown) {
                     next(err);
                 }
         });

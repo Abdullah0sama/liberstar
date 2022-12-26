@@ -13,6 +13,7 @@
     "rules": {
         "quotes": ["error", "single"],
         "no-unused-vars": "off",
+        "no-console": "error",
         "@typescript-eslint/no-unused-vars": "off",
         "unused-imports/no-unused-imports": "error"
     }

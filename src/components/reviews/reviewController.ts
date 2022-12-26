@@ -5,13 +5,14 @@ import { Validation } from '../../common/validation';
 import { getValidation, insertVaidation, listingValidation, paramsValidation, updateValidation } from './reviewValidation';
 import { GetInterface, ListInterface } from './reviewInterface';
 import { protectReview, validateAccessToken } from '../../common/services/auth/authMiddleware';
+import pino from 'pino';
 
 
 export class ReviewController extends ControllerInterface {
     reviewRepository: ReviewRepositroy;
-    constructor(app: Application) {
-        super(app);
-        this.reviewRepository = new ReviewRepositroy();
+    constructor(app: Application, logger: pino.Logger) {
+        super(app, logger);
+        this.reviewRepository = new ReviewRepositroy(logger);
     }
 
     configureRoutes(): Application {
@@ -23,7 +24,8 @@ export class ReviewController extends ControllerInterface {
                     const options: ListInterface = req.query
                     const reviews = await this.reviewRepository.getReviews(options);
                     res.status(200).send({ data: reviews });
-                } catch(err: any) {
+                } catch(err: unknown) {
+                    this.logger.error(err, 'ReviewController GET /reviews')
                     next(err);
                 }
         });
@@ -36,7 +38,8 @@ export class ReviewController extends ControllerInterface {
                     const options: GetInterface = req.query;
                     const review = await this.reviewRepository.getReviewById(req.params.id, options);
                     res.status(200).send({ data: review });
-                } catch(err: any) {
+                } catch(err: unknown) {
+                    this.logger.error(err, 'ReviewController GET /reviews/:id')
                     next(err);
                 }
         });
@@ -49,7 +52,8 @@ export class ReviewController extends ControllerInterface {
                 try {
                     const id = await this.reviewRepository.insertReview(req.body);
                     res.status(201).send({ data: { id }});
-                } catch(err: any) {
+                } catch(err: unknown) {
+                    this.logger.error(err, 'ReviewController POST /reviews')
                     next(err);
                 }
         });
@@ -62,7 +66,8 @@ export class ReviewController extends ControllerInterface {
                 try {
                     await this.reviewRepository.deleteReview(req.params.id);
                     res.status(204).end();
-                } catch(err: any) {
+                } catch(err: unknown) {
+                    this.logger.error(err, 'ReviewController DELETE /reviews/:id')
                     next(err);
                 }
         });
@@ -75,7 +80,8 @@ export class ReviewController extends ControllerInterface {
                 try {
                     await this.reviewRepository.updateReview(req.params.id, req.body);
                     res.status(204).end();
-                } catch(err: any) {
+                } catch(err: unknown) {
+                    this.logger.error(err, 'ReviewController PATCH /reviews/:id')
                     next(err);
                 }
         });

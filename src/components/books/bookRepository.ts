@@ -1,3 +1,4 @@
+import pino from 'pino';
 import { NotFound } from '../../common/Errors';
 import { RepositoryInterface } from '../../common/RepositoryInterface';
 import { BaseBookInterface, GetInterface, ListInterface } from './bookInterface';
@@ -5,8 +6,8 @@ import { bookFields } from './bookValidation';
 
 export class BookRepository extends RepositoryInterface {
     tableName = 'books'
-    constructor() {
-        super();
+    constructor(logger: pino.Logger) {
+        super(logger);
     }
 
     async getBooks (options: ListInterface) {
@@ -26,7 +27,8 @@ export class BookRepository extends RepositoryInterface {
                 throw new NotFound(`User with id: ${id} is not found!`);
             }
             return book[0];
-        } catch (err: any) {
+        } catch (err: unknown) {
+            this.logger.error(err, `Failed to get book id: ${id}`)
             throw err;
         }
     }
@@ -36,8 +38,9 @@ export class BookRepository extends RepositoryInterface {
             const ret = await this.knexInstance.insert(bookData).into(this.tableName).returning('id');
             const { id } = ret[0];
             return id;
-        } catch (err: any) {
-            console.log(err)
+        } catch (err: unknown) {
+            this.logger.error(err, 'Failed to insert book')
+            throw err
         }
     }
 
@@ -46,7 +49,8 @@ export class BookRepository extends RepositoryInterface {
             const rowsAffected = await this.knexInstance.update(bookDate).from(this.tableName).where('id', '=', id);
             if(rowsAffected == 0) 
                 throw new NotFound('User not found!');
-        } catch(err: any) {
+        } catch(err: unknown) {
+            this.logger.error(err, `Failed to update book id: ${id}`)
             throw err;
         }
     }
@@ -54,8 +58,9 @@ export class BookRepository extends RepositoryInterface {
     async deleteBookById(id: string) {
         try {
             await this.knexInstance.delete().from(this.tableName).where('id', '=', id);
-        } catch (err: any) {
-            console.log(err)
+        } catch (err: unknown) {
+            this.logger.error(err, `Failed to delete book id: ${id}`)
+            throw err;
         }
     }
 }

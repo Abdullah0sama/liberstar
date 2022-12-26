@@ -1,7 +1,7 @@
 
-import Joi from "joi";
+import Joi from 'joi';
 import express from 'express';
-import { UnporcessableEntity } from "./Errors";
+import { UnporcessableEntity } from './Errors';
 export function Validation(schema: Joi.Schema) {
     return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
         try {

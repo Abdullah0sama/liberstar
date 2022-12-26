@@ -6,5 +6,5 @@ Details
   - CRUD operations
   - Input validation
   - SQL based
-  - Authentication (TODO)
-  - Role Based Authorization (TODO)
+  - Authentication 
+  - Role Based Authorization

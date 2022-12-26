@@ -7,7 +7,7 @@ export abstract class RepositoryInterface {
 
     constructor () {
         // Parse date to date object without changing timezone
-        types.setTypeParser(1082, (val: any) => val);
+        types.setTypeParser(1082, (val: unknown) => val);
         this.knexInstance = knex({
             client: 'pg',
             connection: {

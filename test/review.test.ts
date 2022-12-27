@@ -2,9 +2,22 @@ import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import knex from 'knex'
 import supertest from 'supertest'
-import { app } from '../src/app'
+import { createApp } from '../src/app'
 import { booksDataSet, reviewsDataSet, usersDataSet } from './dataset'
 import { getRootAccessToken } from './utils'
+
+import { AuthController } from '../src/components/auth/auth.controller'
+import { ReviewController } from '../src/components/reviews/reviewController'
+
+const { app } = createApp({
+    controllers: [
+        AuthController,
+        ReviewController
+    ],
+    loggerOptions: {
+        enabled: false
+    }
+})
 
 const knexInstance = knex({
     client: 'pg',

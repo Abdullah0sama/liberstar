@@ -13,3 +13,7 @@ export abstract class ControllerInterface {
 
     abstract configureRoutes(): express.Application;
 }
+
+export type ControllerBase = {
+    new(app: express.Application, logger: pino.Logger): ControllerInterface
+}

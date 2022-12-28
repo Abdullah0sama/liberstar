@@ -10,8 +10,8 @@ export function Validation(schema: Joi.Schema) {
             if (Object.keys(req.query).length != 0) Object.assign(data, { query: req.query })
             await schema.validateAsync(data)
             next()
-        } catch (err: any) {
-            next(new UnporcessableEntity(err));
+        } catch (err: unknown) {
+            next(new UnporcessableEntity(String(err)));
         }
     }
 }

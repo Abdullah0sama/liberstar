@@ -6,10 +6,13 @@ import { rootUser } from "./dataset";
 
 
 export async function hashedUser (users: UserInterfaceFull[]): Promise<UserInterfaceFull[]> {
-    const userHashed = await Promise.all(users.map(async (user) => {
-        let password = await PasswordHash.hash(user.password);
-        return Object.assign({}, user, {password});
+    let userHashedPassword = await Promise.all(users.map((user) => {
+        return PasswordHash.hash(user.password);
     }))
+    const userHashed = users.map((user, index) => {
+        return Object.assign({}, user, {password: userHashedPassword[index]});
+    })
+
     return userHashed
 }
 
@@ -17,7 +20,9 @@ export async function getRootAccessToken(): Promise<string> {
     try {
         const  user = (await hashedUser([rootUser]))[0]
         const {role, username, name, id, ...rest} = user;
-        const token = await generateToken({role, username, name, id})
+        const token = await generateToken({role, username, name, id}, {
+            expiresIn: '1d'
+        })
         return token;
     } catch(err: any) {
         throw err;

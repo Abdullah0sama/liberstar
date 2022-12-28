@@ -10,8 +10,9 @@ import { AuthController } from '../src/components/auth/auth.controller'
 import { UserController } from '../src/components/users/userControllers'
 import { BookController } from '../src/components/books/bookController'
 import { ReviewController } from '../src/components/reviews/reviewController'
+import { AuthService } from '../src/components/auth/auth.service'
 
-const { app } = createApp({
+const { app, logger } = createApp({
     controllers: [
         AuthController,
         UserController,
@@ -22,6 +23,7 @@ const { app } = createApp({
         enabled: false
     }
 })
+const authService = new AuthService(logger)
 
 const knexInstance = knex({
     client: 'pg',
@@ -41,23 +43,30 @@ async function emptyTable () {
     await knexInstance.delete('*').from('books');
 }
 
+
 async function getToken(user: any) {
-    const auth = await supertest(app)
-            .post('/auth')
-            .send({
-                username: user.username,
-                password: user.password
-            })
-            .expect(200)
-    return auth.body
+    const token = await authService.passwordAuthentication({
+        username: user.username,
+        password: user.password
+    })
+    // const res = await supertest(app)
+    //         .post('/auth')
+    //         .send ({
+    //             username: user.username,
+    //             password: user.password
+    //         })
+    //         .expect(200)
+    return { accessToken: token }
 }
 
 describe('POST /auth', () => {
-    let users: any[];
+    let hashedUsers: any[];
+    before(async() => {
+        hashedUsers = await hashedUser(usersDataSet)
+    })
     beforeEach(async () => {
         await emptyTable();
-        users = await hashedUser(usersDataSet)
-        await knexInstance.insert(users).into('users')
+        await knexInstance.insert(hashedUsers).into('users')
     })
     it('Should get access token when credentials are correct', async () => {
         const user = usersDataSet[0]
@@ -76,11 +85,13 @@ describe('POST /auth', () => {
 
 
 describe('User role authorization', () => {
-    let users: any[];
+    let hashedUsers: any[];
+    before(async() => {
+        hashedUsers = await hashedUser(usersDataSet)
+    })
     beforeEach(async () => {
         await emptyTable();
-        users = await hashedUser(usersDataSet)
-        await knexInstance.insert(users).into('users')
+        await knexInstance.insert(hashedUsers).into('users')
         await knexInstance.insert(booksDataSet).into('books')
         await knexInstance.insert(reviewsDataSet).into('reviews')
 
@@ -187,12 +198,14 @@ describe('User role authorization', () => {
 
 
 describe('Admin role authorization', () => {
-    let users;
+    let hashedUsers: any[];
+    before(async () =>  {
+        hashedUsers = await hashedUser(adminDataSet)
+    })
     beforeEach(async () => {
         await emptyTable();
         await knexInstance.insert(booksDataSet).into('books')
-        users = await hashedUser(adminDataSet)
-        await knexInstance.insert(users).into('users')
+        await knexInstance.insert(hashedUsers).into('users')
     });
 
     it('Admin not allowed to update users', async () => {

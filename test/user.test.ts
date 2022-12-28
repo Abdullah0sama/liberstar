@@ -15,7 +15,7 @@ const { app } = createApp({
         UserController,
     ],
     loggerOptions: {
-        enabled: false
+        enabled: true
     }
 })
 
@@ -86,10 +86,12 @@ describe('GET /users/:id', () => {
 
 describe('DELETE /users/:id', () => {
     let token: string;
+    before(async() => {
+        token = await getRootAccessToken();
+    })
     beforeEach(async () => {
         await emptyTable();
         await knexInstance.insert(usersDataSet).into('users')
-        token = await getRootAccessToken();
     })
 
     it('Delete existing user', async () => {
@@ -113,10 +115,13 @@ describe('DELETE /users/:id', () => {
 
 describe('POST /users/', () => {
     let token: string;
+    before(async() => {
+        token = await getRootAccessToken();
+    })
     beforeEach(async () => {
         await emptyTable();
-        token = await getRootAccessToken();
-
+        await knexInstance.insert(usersDataSet).into('users')
+        await knexInstance.raw(`SELECT setval('users_id_seq', (SELECT MAX(id) FROM users)+1);`)
     });
 
     it('Should add new user', async () => {
@@ -152,11 +157,6 @@ describe('POST /users/', () => {
             password: '12345678910'
         }
 
-        await supertest(app)
-            .post('/users')
-            .set('Authorization', `Bearer ${token}`)
-            .send(firstUser)
-
         const res = await supertest(app)
             .post('/users')
             .set('Authorization', `Bearer ${token}`)
@@ -178,11 +178,6 @@ describe('POST /users/', () => {
             password: '12345678910'
         }
 
-        await supertest(app)
-            .post('/users')
-            .set('Authorization', `Bearer ${token}`)
-            .send(firstUser)
-
         const res = await supertest(app)
             .post('/users')
             .send(user)
@@ -195,10 +190,12 @@ describe('POST /users/', () => {
 
 describe('PATCH /users/:id', () => {
     let token: string;
+    before(async() => {
+        token = await getRootAccessToken();
+    })
     beforeEach(async () => {
         await emptyTable();
         await knexInstance.insert(usersDataSet).into('users')
-        token = await getRootAccessToken();
     });
 
     it('Should update user', async () => {

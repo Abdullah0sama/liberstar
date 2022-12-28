@@ -1,8 +1,10 @@
 import * as dotenv from 'dotenv'
 import path from 'path';
+
 dotenv.config({
-    path: path.resolve(__dirname, `./config/.env${(process.env.NODE_ENV == 'production' ? '': '-dev')}`)
+    path: path.resolve(__dirname, `../config/.env${(process.env.NODE_ENV == 'production' ? '': '-dev')}`)
 })
+
 import pino from 'pino'
 import express from 'express';
 import { HttpError } from './common/Errors';

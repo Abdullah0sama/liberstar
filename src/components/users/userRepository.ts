@@ -47,9 +47,9 @@ export class UserRepository extends RepositoryInterface {
         }
     }
 
-    async insertUser(userDate: BaseUserInterface) {
+    async insertUser(userData: BaseUserInterface) {
         try {
-            const ret = await this.knexInstance.insert(userDate).into(this.tableName).returning('id');
+            const ret = await this.knexInstance.insert(userData).into(this.tableName).returning('id');
             const { id } = ret[0];
             return id;
         } catch (err: unknown) {
@@ -57,7 +57,7 @@ export class UserRepository extends RepositoryInterface {
             if (!(err instanceof DatabaseError)) throw err
             if (err.constraint == 'users_username_unique') throw new UnporcessableEntity('`username` is already used!');
             else if (err.constraint == 'users_email_unique') throw new UnporcessableEntity('`email` is already used!');
-            
+            else throw err
         }
     }
 

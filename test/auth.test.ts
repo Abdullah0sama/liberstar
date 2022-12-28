@@ -193,6 +193,35 @@ describe('User role authorization', () => {
         const [ foundReview ] = await knexInstance.from('reviews').where('id', '=', review.id);
         expect(foundReview).include(review);
     })
+
+    it('User not allowed to insert books', async () => {
+        const book = {
+            title: 'Hunger Games',
+            description: 'Something about unfair distribution of wealth and justice',
+            release_date: '2005-05-05',
+            author: 'someAuthor'
+        }
+        
+        let user = usersDataSet[0]
+        const { accessToken: token } = await getToken(user)
+
+        const res = await supertest(app)
+            .post('/books')
+            .set('Authorization', `Bearer ${token}`)
+            .send(book)
+            .expect(403)
+    })
+
+    it('User not allowed to delete books', async () => {
+        let book = booksDataSet[0]
+        let user = usersDataSet[0]
+        const { accessToken: token } = await getToken(user)
+
+        const res = await supertest(app)
+            .delete(`/books/${book.id}`)
+            .set('Authorization', `Bearer ${token}`)
+            .expect(403)
+    })
 })
 
 
@@ -206,6 +235,7 @@ describe('Admin role authorization', () => {
         await emptyTable();
         await knexInstance.insert(booksDataSet).into('books')
         await knexInstance.insert(hashedUsers).into('users')
+        await knexInstance.raw(`SELECT setval('books_id_seq', (SELECT MAX(id) FROM books)+1);`)
     });
 
     it('Admin not allowed to update users', async () => {
@@ -250,7 +280,6 @@ describe('Admin role authorization', () => {
         
         let admin = adminDataSet[0]
         const { accessToken: token } = await getToken(admin)
-
 
         const res = await supertest(app)
             .post('/books')

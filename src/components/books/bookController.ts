@@ -5,7 +5,7 @@ import { paramsValidation } from '../users/userValidation';
 import { BookRepository } from './bookRepository';
 import { getValidation, insertValidation, listingValidation, updateValidation } from './bookValidation';
 import { GetInterface, ListInterface } from './bookInterface';
-import { validateAccessToken } from '../../common/services/auth/authMiddleware';
+import { protectBooks, validateAccessToken } from '../../common/services/auth/authMiddleware';
 import pino from 'pino';
 
 export class BookController extends ControllerInterface {
@@ -45,22 +45,35 @@ export class BookController extends ControllerInterface {
 
         this.app.post('/books', 
             validateAccessToken,
+            protectBooks,
             Validation(insertValidation), 
-            async (req, res) => {
-                const id = await this.bookRepository.insertBook(req.body);
-                res.status(201).send({ data: { id }});
+            async (req, res, next) => {
+                try {
+                    const id = await this.bookRepository.insertBook(req.body);
+                    res.status(201).send({ data: { id }});
+                } catch (err) {
+                    this.logger.error(err, 'BookController POST /books/')
+                    next(err)
+                }
         });
 
         this.app.delete('/books/:id', 
             validateAccessToken,
+            protectBooks,
             Validation(paramsValidation), 
-            async (req, res) => {
-                await this.bookRepository.deleteBookById(req.params.id);
-                res.status(204).end();
+            async (req, res, next) => {
+                try {
+                    await this.bookRepository.deleteBookById(req.params.id);
+                    res.status(204).end();
+                } catch (err) {
+                    this.logger.error(err, 'BookController DELETE /books/:id')
+                    next(err)
+                }
         });
 
         this.app.patch('/books/:id', 
             validateAccessToken,
+            protectBooks,
             Validation(updateValidation), 
             async (req, res, next) => {
                 try {

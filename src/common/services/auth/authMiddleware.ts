@@ -44,13 +44,14 @@ export async function protectReview (req: express.Request, res: express.Response
         select: ['user_ref']
     })
     if (!review || review.user_ref != req.auth.id) 
-    next(new Forbidden(`User '${req.auth.username}' is not authorized is not authorized to perform such action`))
+        next(new Forbidden(`User '${req.auth.username}' is not authorized is not authorized to perform such action`))
+
     return next()
 }
 
 export async function protectBooks (req: express.Request, res: express.Response, next: express.NextFunction) {
     if (!req.auth) return next(new NotAuthorized())
 
-    if (['admin', 'root'].includes(req.auth.role)) return next()
-
+    if (![userRoles.admin, userRoles.root].includes(req.auth.role)) return next(new Forbidden())
+    return next()
 }

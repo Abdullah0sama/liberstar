@@ -15,7 +15,7 @@ const { app } = createApp({
         UserController,
     ],
     loggerOptions: {
-        enabled: true
+        enabled: false
     }
 })
 

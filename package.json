@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -r ts-node/register test/**/* --timeout 10000 --exit",
+    "test": "mocha -r ts-node/register test/**/* --timeout 5000 --exit",
     "migrate:up": "knex migrate:latest --knexfile knexfile.js",
     "migrate:down": "knex migrate:down --knexfile knexfile.js",
     "migrate:latest": "knex migrate:latest --knexfile knexfile.js",
+    "seed": "knex seed:run",
     "build": "tsc",
     "start": "tsc && node dist/server.js",
     "dev": "tsc && node dist/server.js | npx pino-pretty",

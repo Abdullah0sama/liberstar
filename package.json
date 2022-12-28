@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -r ts-node/register test/**/*",
+    "test": "mocha -r ts-node/register test/**/* --timeout 10000 --exit",
     "migrate:up": "knex migrate:latest --knexfile knexfile.js",
     "migrate:down": "knex migrate:down --knexfile knexfile.js",
     "migrate:latest": "knex migrate:latest --knexfile knexfile.js",

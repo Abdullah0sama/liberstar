@@ -1,0 +1,22 @@
+name: Running tests
+
+on: [push]
+
+jobs:
+  
+  test:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 19.x
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Start Docker container for testing
+        run: docker-compose up -d
+      - name: Run latest migartions
+        run: npm run migrate:latest
+      - run: npm run test

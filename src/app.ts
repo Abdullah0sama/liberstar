@@ -1,12 +1,14 @@
 import * as dotenv from 'dotenv'
-dotenv.config()
+import path from 'path';
+dotenv.config({
+    path: path.resolve(__dirname, `./config/.env${(process.env.NODE_ENV == 'production' ? '': '-dev')}`)
+})
 import pino from 'pino'
 import express from 'express';
 import { HttpError } from './common/Errors';
 import { ControllerBase } from './common/ControllerInterface'
 
 export function createApp(options: optionsInterface): { app: express.Application, logger: pino.Logger } {
-    
     const logger = pino(options.loggerOptions)
     const app = express();
     app.use(express.json())
